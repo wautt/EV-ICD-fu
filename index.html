@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EV-ICD Follow-up Form</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#233a8f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef0f5;--paper:#fff;--ink:#1c2233;--pen:#1f3fa8;--line:#c9ceda;--mute:#5f677a;--acc:#233a8f;--accfg:#fff;--fill:#f4f6fb;--head:#e6eaf6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#262d40}}
+:root[data-theme="dark"]{--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#262d40}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.35 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:12px 12px 0}
+.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.sec h2{margin:0;padding:9px 14px;font-size:15px;font-weight:600;background:var(--head)}
+.body{padding:12px 14px 14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f>span,.hd{font-size:13px;color:var(--mute)}
+.in{width:100%;font:inherit;font-size:17px;color:var(--pen);background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-height:44px}
+.in:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:1px;background:var(--paper)}
+.tb{display:grid;gap:8px 8px;align-items:center}
+.tb.s{grid-template-columns:minmax(76px,1.1fr) 1fr 1fr 56px}
+.tb.i{grid-template-columns:minmax(96px,1fr) 2fr}
+.tb.t{grid-template-columns:auto 1fr 1fr}
+.rl{font-weight:600;font-size:15px}
+.hd{text-align:left}.hd.c{text-align:center}
+.ck{display:flex;justify-content:center}
+.ck input{width:28px;height:28px;accent-color:var(--acc)}
+.opt{display:flex;align-items:center;gap:8px;min-height:36px;font-size:15px}
+.opt input{width:20px;height:20px;accent-color:var(--acc)}
+textarea[hidden],.in[hidden]{display:none}
+.vn{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.in:disabled{opacity:.5}
+.big{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}
+.big input{width:24px;height:24px;accent-color:var(--acc)}
+textarea{font:inherit;font-size:17px;color:var(--pen);background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:10px;width:100%;min-height:84px;resize:vertical;margin-bottom:8px}
+.pv{padding:10px;background:#fff}
+canvas{display:block;width:100%;height:auto}
+.bar{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 -12px}
+.bar .in-w{max-width:720px}
+button{font:inherit;font-weight:500;padding:10px 14px;border-radius:6px;border:1px solid var(--acc);background:var(--acc);color:var(--accfg);cursor:pointer;min-height:44px}
+button.ghost{background:transparent;color:var(--acc)}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#msg{color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<div class="sec"><h2>Device</h2><div class="body g2">
+  <label class="f"><span>Model</span><input class="in" id="model" value="DVEA3E4" readonly></label>
+  <label class="f"><span>Follow up date</span><input class="in" type="date" id="date"></label>
+  <label class="f"><span>DOI</span><input class="in" type="date" id="doi"></label>
+  <label class="f"><span>Mode</span><input class="in" id="pm" placeholder="OVO"></label>
+  <label class="f"><span>Rate (bpm)</span><input class="in" id="rate" inputmode="decimal"></label>
+  <label class="f"><span>Rhythm</span><input class="in" id="rhythm" placeholder="VS"></label>
+  <label class="f"><span>Battery (V)</span><input class="in" id="batt" inputmode="decimal"></label>
+  <div class="f"><label for="yrs" style="font-size:13px;color:var(--mute)">Est. longevity (yrs)</label><input class="in" id="yrs" inputmode="decimal"><label class="opt"><input type="checkbox" id="init">Initializing</label></div>
+  <label class="f"><span>Charge time (sec)</span><input class="in" id="chg" inputmode="decimal"></label>
+  <label class="f"><span>Charge energy (J)</span><input class="in" id="chgj" inputmode="decimal" placeholder="30"></label>
+  <label class="f"><span>V-pace (%)</span><input class="in" id="vpace" inputmode="decimal"></label>
+</div></div>
+
+<div class="sec"><h2>Sensing R wave</h2><div class="body"><div class="tb s">
+  <span class="hd">Vector</span><span class="hd">R wave (mV)</span><span class="hd">No PWOs at (mV)</span><span class="hd c">Current</span>
+  <span class="rl">Ring1 to Ring2</span><input class="in" id="s1" inputmode="text" placeholder="4.8-4.9" aria-label="Ring1 to Ring2 mV"><input class="in" id="p1" inputmode="decimal" aria-label="Ring1 to Ring2 no PWOs at mV"><span class="ck"><input type="checkbox" id="c1" aria-label="Ring1 to Ring2 current vector"></span>
+  <div class="vn"><label class="opt"><input type="checkbox" id="vn1">Add note after Ring1 to Ring2</label><input class="in" id="vt1" hidden aria-label="Note for Ring1 to Ring2" placeholder="Type the note"></div>
+  <span class="rl">Ring1 to Can</span><input class="in" id="s2" inputmode="text" placeholder="4.8-4.9" aria-label="Ring1 to Can mV"><input class="in" id="p2" inputmode="decimal" aria-label="Ring1 to Can no PWOs at mV"><span class="ck"><input type="checkbox" id="c2" aria-label="Ring1 to Can current vector"></span>
+  <div class="vn"><label class="opt"><input type="checkbox" id="vn2">Add note after Ring1 to Can</label><input class="in" id="vt2" hidden aria-label="Note for Ring1 to Can" placeholder="Type the note"></div>
+  <span class="rl">Ring2 to Can</span><input class="in" id="s3" inputmode="text" placeholder="4.8-4.9" aria-label="Ring2 to Can mV"><input class="in" id="p3" inputmode="decimal" aria-label="Ring2 to Can no PWOs at mV"><span class="ck"><input type="checkbox" id="c3" aria-label="Ring2 to Can current vector"></span>
+  <div class="vn"><label class="opt"><input type="checkbox" id="vn3">Add note after Ring2 to Can</label><input class="in" id="vt3" hidden aria-label="Note for Ring2 to Can" placeholder="Type the note"></div>
+</div>
+</div></div>
+
+<div class="sec"><h2>Impedance (Ω)</h2><div class="body"><div class="tb i">
+  <span class="rl">Ring1 to Ring2</span><input class="in" id="i1" inputmode="decimal" aria-label="Ring1 to Ring2 impedance">
+  <span class="rl">Ring1 to Coil2</span><input class="in" id="i2" inputmode="decimal" aria-label="Ring1 to Coil2 impedance">
+  <span class="rl">High Voltage</span><input class="in" id="i3" inputmode="decimal" aria-label="High voltage impedance">
+</div></div></div>
+
+<div class="sec"><h2>Threshold</h2><div class="body"><div class="tb t">
+  <span class="hd"></span><span class="hd">Volt (V)</span><span class="hd">Pulse width (ms)</span>
+  <span class="rl">1</span><input class="in" id="t1v" inputmode="decimal" aria-label="Threshold 1 volts"><input class="in" id="t1m" inputmode="decimal" aria-label="Threshold 1 ms">
+  <span class="rl">2</span><input class="in" id="t2v" inputmode="decimal" aria-label="Threshold 2 volts"><input class="in" id="t2m" inputmode="decimal" aria-label="Threshold 2 ms">
+</div></div></div>
+
+<div class="sec"><h2>Note</h2><div class="body">
+  <textarea id="note" aria-label="Note" placeholder="Sensing &amp; PWOs, events, plan"></textarea>
+  <label class="big"><input type="checkbox" id="noep">No episode</label>
+</div></div>
+
+<div class="sec"><h2>Export preview</h2><div class="pv"><canvas id="cv" width="1170" height="1500" aria-label="Preview of exported form"></canvas></div></div>
+</main>
+<div class="bar" style="justify-content:center">
+  <button id="png">Save PNG</button>
+  <button id="pdf">Save PDF</button>
+  <button class="ghost" id="copy">Copy text</button>
+  <button class="ghost" id="clear">Clear</button>
+  <span id="msg" role="status"></span>
+</div>
+<script>
+const $=id=>document.getElementById(id),v=id=>$(id).value.trim();
+const W=1170,L=74,R=1096,BLUE="#233a8f",INK="#111",FF="Helvetica,Arial,sans-serif";
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function fd(s){if(!s)return"";const p=s.split("-");return +p[2]+" "+MON[p[1]-1]+" "+p[0]}
+$("date").value=today();
+
+function render(cv,H){
+  cv.width=W;cv.height=H;const c=cv.getContext("2d");
+  c.fillStyle="#fff";c.fillRect(0,0,W,H);
+  const T=(t,x,y,o={})=>{c.font=(o.w||400)+" "+(o.s||34)+"px "+FF;c.fillStyle=o.c||BLUE;c.textAlign=o.a||"left";c.textBaseline="alphabetic";c.fillText(t,x,y)};
+  const M=(t,s=34,w=400)=>{c.font=w+" "+s+"px "+FF;return c.measureText(t).width};
+  const ln=(x1,x2,y,lw=2)=>{c.strokeStyle=BLUE;c.lineWidth=lw;c.beginPath();c.moveTo(x1,y);c.lineTo(x2,y);c.stroke()};
+  const U=(val,x1,x2,y,s=34)=>{ln(x1,x2,y+12);T(val||"-",(x1+x2)/2,y,{c:INK,w:600,s:s,a:"center"})};
+  const F=(lab,val,x1,x2,y,unit)=>{T(lab,x1,y);let e=x2;if(unit){T(unit,x2,y,{a:"right"});e=x2-M(unit)-10}U(val,x1+M(lab)+14,e,y)};
+  const box=(x,y,on)=>{c.strokeStyle=BLUE;c.lineWidth=3;c.strokeRect(x,y,30,30);if(on){c.strokeStyle=INK;c.lineWidth=5;c.beginPath();c.moveTo(x+6,y+16);c.lineTo(x+13,y+23);c.lineTo(x+25,y+7);c.stroke()}};
+  const wrap=(t,s=36,mx=1060,w=600)=>{const out=[];let cur="";for(const tok of t.split(/(?<=\s)/)){if(M(cur+tok,s,w)<=mx){cur+=tok;continue}
+    if(cur){out.push(cur.trimEnd());cur=""}let part="";for(const ch of tok){if(M(part+ch,s,w)>mx){out.push(part);part=""}part+=ch}cur=part}
+    if(cur)out.push(cur.trimEnd());return out};
+
+  T(v("rhythm"),60,66,{c:INK,w:700,s:42});
+  const top=104;
+  T("Medtronic",74,top+100,{s:66,w:700});
+  F("Follow up date",fd($("date").value),484,R,top+88);
+  let y=top+178;T("EV-ICD F/U",74,y,{s:40,w:700});ln(L,R,y+24);
+  y+=98;F("Model",v("model"),L,570,y);F("DOI",fd($("doi").value),600,R,y);
+  y+=74;F("Mode",v("pm"),L,570,y);F("Rate",v("rate"),600,R,y,"bpm");
+  y+=74;F("Battery",v("batt"),L,570,y,"V");if($("init").checked)F("est.","Initializing",600,R,y);else F("est.",v("yrs"),600,R,y,"yrs");
+  y+=74;F("Charge time(s)",[v("chg"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" "),L,570,y);F("V-pace(%)",v("vpace"),600,R,y);
+
+  y+=94;T("Sensing R wave",L,y,{c:INK,w:700,s:36});
+  [["Ring1 to Ring2","s1","p1","c1"],["Ring1 to Can","s2","p2","c2"],["Ring2 to Can","s3","p3","c3"]].forEach(r=>{
+    y+=68;T(r[0],L,y,{s:30});U(v(r[1]),295,455,y,30);T("mV",463,y,{s:30});
+    T("no PWOs at",525,y,{s:30});U(v(r[2]),695,800,y,30);T("mV",808,y,{s:30});
+    box(868,y-26,$(r[3]).checked);T("current vector",908,y,{s:26});
+    const k=r[3].slice(1);if($("vn"+k).checked&&v("vt"+k))wrap("Note: "+v("vt"+k),28,950,500).forEach(t=>{y+=46;T(t,L+20,y,{c:INK,w:500,s:28})});
+  });
+
+
+  y+=94;T("Impedance(Ω)",L,y,{c:INK,w:700,s:36});
+  [["Ring1 to Ring2","i1"],["Ring1 to Coil2","i2"],["High Voltage","i3"]].forEach(r=>{
+    y+=68;T(r[0],L,y,{s:30});U(v(r[1]),300,560,y,30);T("Ω",570,y,{s:30});
+  });
+
+  y+=94;T("Threshold",L,y,{s:30});
+  U(v("t1v"),250,350,y,30);T("V @",360,y,{s:30});U(v("t1m"),425,510,y,30);T("ms",518,y,{s:30});T("/",585,y,{s:30});
+  U(v("t2v"),620,720,y,30);T("V @",730,y,{s:30});U(v("t2m"),795,880,y,30);T("ms",888,y,{s:30});
+
+  const bb=y+56;c.strokeStyle=BLUE;c.lineWidth=6;c.strokeRect(44,top,1082,bb-top);
+  let lines=[];if($("noep").checked)lines.push("No episode");
+  v("note").split("\n").forEach(t=>{if(t.trim())lines=lines.concat(wrap(t.trim(),36,1060,600))});
+  let e=bb+40;
+  if(lines.length){let fy=bb+66;lines.forEach(t=>{T(t,60,fy,{c:INK,w:600,s:36});fy+=52});e=fy-8}
+  return Math.ceil(e);
+}
+const cv=$("cv"),sc=document.createElement("canvas");let raf=0;
+function redraw(){const H=render(sc,3200);render(cv,H)}
+document.addEventListener("input",()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(redraw)});
+function sync(){for(let i=1;i<4;i++)$("vt"+i).hidden=!$("vn"+i).checked;$("yrs").disabled=$("init").checked}
+document.addEventListener("change",()=>{sync();redraw()});
+sync();redraw();
+
+function say(t){$("msg").textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>$("msg").textContent="",3000)}
+function pdfBlob(jpg,w,h){
+  const pw=595,ph=842,m=30;let iw=pw-2*m,ih=iw*h/w;if(ih>ph-2*m){ih=ph-2*m;iw=ih*w/h}
+  const x=(pw-iw)/2,enc=new TextEncoder(),parts=[],offs=[];let len=0;
+  const add=d=>{const b=typeof d==="string"?enc.encode(d):d;parts.push(b);len+=b.length};
+  const obj=(n,body)=>{offs[n]=len;add(n+" 0 obj\n");body.forEach(add);add("\nendobj\n")};
+  add("%PDF-1.4\n");
+  obj(1,["<< /Type /Catalog /Pages 2 0 R >>"]);
+  obj(2,["<< /Type /Pages /Kids [3 0 R] /Count 1 >>"]);
+  obj(3,["<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw+" "+ph+"] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>"]);
+  obj(4,["<< /Type /XObject /Subtype /Image /Width "+w+" /Height "+h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpg.length+" >>\nstream\n",jpg,"\nendstream"]);
+  const cs="q "+iw.toFixed(2)+" 0 0 "+ih.toFixed(2)+" "+x.toFixed(2)+" "+(ph-m-ih).toFixed(2)+" cm /Im0 Do Q";
+  obj(5,["<< /Length "+cs.length+" >>\nstream\n"+cs+"\nendstream"]);
+  const xr=len;let t="xref\n0 6\n0000000000 65535 f \n";
+  for(let i=1;i<=5;i++)t+=String(offs[i]).padStart(10,"0")+" 00000 n \n";
+  add(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
+  return new Blob(parts,{type:"application/pdf"});
+}
+async function out(blob,name){
+  let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
+  if(dl){await dl.save({filename:name,data:blob});return}
+  const f=new File([blob],name,{type:blob.type});
+  if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000)
+}
+async function save(fmt){
+  redraw();const base="EV-ICD_FU_"+($("date").value||"form");
+  try{
+    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await out(b,base+".png")}
+    else{const bin=atob(cv.toDataURL("image/jpeg",0.95).split(",")[1]),u=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+      await out(pdfBlob(u,cv.width,cv.height),base+".pdf")}
+    say("Saved");
+  }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save the file")}
+}
+$("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
+
+function summary(){
+  const n=x=>v(x)||"-",vec=(a,s,p,k)=>a+" "+n(s)+" mV, no PWOs at "+n(p)+" mV"+($(k).checked?" [current vector]":"")+($("vn"+k.slice(1)).checked&&v("vt"+k.slice(1))?" | Note: "+v("vt"+k.slice(1)):"");
+  return ["EV-ICD F/U  "+(fd($("date").value)||"-"),
+   "Model: "+n("model")+"  DOI: "+(fd($("doi").value)||"-"),
+   "Mode: "+n("pm")+"  Rate: "+n("rate")+" bpm  Rhythm: "+n("rhythm"),
+   "Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":n("yrs")+" yrs")+")",
+   "Charge time: "+n("chg")+" sec @ "+n("chgj")+" J  V-pace: "+n("vpace")+" %",
+   "Sensing R wave",vec("R1-R2","s1","p1","c1"),vec("R1-Can","s2","p2","c2"),vec("R2-Can","s3","p3","c3"),
+   "Impedance: R1-R2 "+n("i1")+" Ω, R1-Coil2 "+n("i2")+" Ω, HV "+n("i3")+" Ω",
+   "Threshold: "+n("t1v")+" V @ "+n("t1m")+" ms / "+n("t2v")+" V @ "+n("t2m")+" ms",
+   $("noep").checked?"No episode":"",v("note")].filter(Boolean).join("\n");
+}
+$("copy").onclick=async()=>{const t=summary();
+  try{await navigator.clipboard.writeText(t);say("Copied")}
+  catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();
+    try{document.execCommand("copy");say("Copied")}catch(_){say("Copy failed")}a.remove()}};
+$("clear").onclick=()=>{document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
+  document.querySelectorAll("input[type=checkbox]").forEach(e=>e.checked=false);$("date").value=today();sync();redraw();say("Cleared")};
+if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
