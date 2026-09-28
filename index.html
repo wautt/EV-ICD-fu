@@ -4,12 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EV-ICD Follow-up Form</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="theme-color" content="#233a8f">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#eef0f5;--paper:#fff;--ink:#1c2233;--pen:#1f3fa8;--line:#c9ceda;--mute:#5f677a;--acc:#233a8f;--accfg:#fff;--fill:#f4f6fb;--head:#e6eaf6}
@@ -31,6 +26,8 @@ main{max-width:720px;margin:0 auto;padding:12px 12px 0}
 .tb.s{grid-template-columns:minmax(76px,1.1fr) 1fr 1fr 56px}
 .tb.i{grid-template-columns:minmax(96px,1fr) 2fr}
 .tb.t{grid-template-columns:auto 1fr 1fr}
+.tb.th{grid-template-columns:1fr 1fr}
+select.in{-webkit-appearance:none;appearance:none}
 .rl{font-weight:600;font-size:15px}
 .hd{text-align:left}.hd.c{text-align:center}
 .ck{display:flex;justify-content:center}
@@ -59,14 +56,22 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   <label class="f"><span>Model</span><input class="in" id="model" value="DVEA3E4" readonly></label>
   <label class="f"><span>Follow up date</span><input class="in" type="date" id="date"></label>
   <label class="f"><span>DOI</span><input class="in" type="date" id="doi"></label>
-  <label class="f"><span>Mode</span><input class="in" id="pm" placeholder="OVO"></label>
+  <label class="f"><span>Mode</span><input class="in" id="pm" value="OVO"></label>
   <label class="f"><span>Rate (bpm)</span><input class="in" id="rate" inputmode="decimal"></label>
   <label class="f"><span>Rhythm</span><input class="in" id="rhythm" placeholder="VS"></label>
   <label class="f"><span>Battery (V)</span><input class="in" id="batt" inputmode="decimal"></label>
-  <div class="f"><label for="yrs" style="font-size:13px;color:var(--mute)">Est. longevity (yrs)</label><input class="in" id="yrs" inputmode="decimal"><label class="opt"><input type="checkbox" id="init">Initializing</label></div>
   <label class="f"><span>Charge time (sec)</span><input class="in" id="chg" inputmode="decimal"></label>
   <label class="f"><span>Charge energy (J)</span><input class="in" id="chgj" inputmode="decimal" placeholder="30"></label>
-  <label class="f"><span>V-pace (%)</span><input class="in" id="vpace" inputmode="decimal"></label>
+  <label class="f"><span>V-pace episode</span><input class="in" id="vpace" inputmode="decimal"></label>
+</div>
+  <div class="f" style="padding:14px 14px 0;margin-top:0"><label for="yrs" style="font-size:13px;color:var(--mute)">Est. longevity</label>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:8px;margin-bottom:8px">
+      <label class="opt" style="gap:4px;min-height:48px"><input type="checkbox" id="gt" aria-label="Greater than">&gt;</label>
+      <input class="in" id="yrs" inputmode="decimal" style="flex:1;min-width:0">
+      <select class="in" id="yru" style="flex:0 0 100px;padding:8px 6px" aria-label="Longevity unit"><option value="yrs">yrs</option><option value="month">month</option></select>
+    </div>
+    <label class="opt"><input type="checkbox" id="init">Initializing</label>
+  </div>
 </div></div>
 
 <div class="sec"><h2>Sensing R wave</h2><div class="body"><div class="tb s">
@@ -86,11 +91,21 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   <span class="rl">High Voltage</span><input class="in" id="i3" inputmode="decimal" aria-label="High voltage impedance">
 </div></div></div>
 
-<div class="sec"><h2>Threshold</h2><div class="body"><div class="tb t">
-  <span class="hd"></span><span class="hd">Volt (V)</span><span class="hd">Pulse width (ms)</span>
-  <span class="rl">1</span><input class="in" id="t1v" inputmode="decimal" aria-label="Threshold 1 volts"><input class="in" id="t1m" inputmode="decimal" aria-label="Threshold 1 ms">
-  <span class="rl">2</span><input class="in" id="t2v" inputmode="decimal" aria-label="Threshold 2 volts"><input class="in" id="t2m" inputmode="decimal" aria-label="Threshold 2 ms">
+<div class="sec"><h2>Threshold</h2><div class="body"><div class="tb th">
+  <span class="hd">Volt (V)</span><span class="hd">Pulse width (ms)</span>
+  <input class="in" id="t1v" inputmode="decimal" aria-label="Threshold volts"><input class="in" id="t1m" inputmode="decimal" aria-label="Threshold pulse width ms">
 </div></div></div>
+
+<div class="sec"><h2>Setting</h2><div class="body">
+  <div class="tb th" style="margin-bottom:8px"><span class="hd">Output V @ ms</span></div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <input class="in" id="ov" inputmode="decimal" placeholder="V" style="flex:1;min-width:0" aria-label="Output volts">
+    <span class="hd" style="flex:0 0 auto">V @</span>
+    <input class="in" id="om" inputmode="decimal" placeholder="ms" style="flex:1;min-width:0" aria-label="Output pulse width ms">
+    <span class="hd" style="flex:0 0 auto">ms</span>
+  </div>
+  <label class="f"><span>Sensitivity (mV)</span><input class="in" id="sens" inputmode="decimal" aria-label="Sensitivity mV"></label>
+</div></div>
 
 <div class="sec"><h2>Note</h2><div class="body">
   <textarea id="note" aria-label="Note" placeholder="Sensing &amp; PWOs, events, plan"></textarea>
@@ -134,10 +149,13 @@ function render(cv,H){
   let y=top+178;T("EV-ICD F/U",74,y,{s:40,w:700});ln(L,R,y+24);
   y+=98;F("Model",v("model"),L,570,y);F("DOI",fd($("doi").value),600,R,y);
   y+=74;F("Mode",v("pm"),L,570,y);F("Rate",v("rate"),600,R,y,"bpm");
-  y+=74;F("Battery",v("batt"),L,570,y,"V");if($("init").checked)F("est.","Initializing",600,R,y);else F("est.",v("yrs"),600,R,y,"yrs");
-  y+=74;F("Charge time(s)",[v("chg"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" "),L,570,y);F("V-pace(%)",v("vpace"),600,R,y);
+  y+=74;F("Battery",v("batt"),L,570,y,"V");
+  if($("init").checked)F("est.","Initializing",600,R,y);
+  else{const gt=($("gt").checked&&v("yrs"))?">":"",unit=$("yru").value==="month"?"mo":"yrs";F("est.",v("yrs")?gt+v("yrs"):"",600,R,y,unit)}
+  y+=74;F("Charge time(s)",[v("chg"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" "),L,570,y);if(v("vpace"))F("V-pace episode",v("vpace"),600,R,y);
 
   y+=94;T("Sensing R wave",L,y,{c:INK,w:700,s:36});
+  y+=56;T("R wave (mV)",L,y,{c:INK,w:600,s:28});T("PWOs testing (mV)",510,y,{c:INK,w:600,s:28});
   [["Ring1 to Ring2","s1","p1","c1"],["Ring1 to Can","s2","p2","c2"],["Ring2 to Can","s3","p3","c3"]].forEach(r=>{
     y+=68;T(r[0],L,y,{s:30});U(v(r[1]),295,455,y,30);T("mV",463,y,{s:30});
     T("no PWOs at",525,y,{s:30});U(v(r[2]),695,800,y,30);T("mV",808,y,{s:30});
@@ -151,9 +169,12 @@ function render(cv,H){
     y+=68;T(r[0],L,y,{s:30});U(v(r[1]),300,560,y,30);T("Ω",570,y,{s:30});
   });
 
-  y+=94;T("Threshold",L,y,{s:30});
-  U(v("t1v"),250,350,y,30);T("V @",360,y,{s:30});U(v("t1m"),425,510,y,30);T("ms",518,y,{s:30});T("/",585,y,{s:30});
-  U(v("t2v"),620,720,y,30);T("V @",730,y,{s:30});U(v("t2m"),795,880,y,30);T("ms",888,y,{s:30});
+  if(v("t1v")||v("t1m")){y+=94;T("Threshold",L,y,{c:INK,w:700,s:36});
+  y+=68;U(v("t1v"),260,400,y,30);T("V @",410,y,{s:30});U(v("t1m"),485,590,y,30);T("ms",598,y,{s:30})}
+
+  y+=94;T("Setting",L,y,{c:INK,w:700,s:36});
+  if(v("ov")||v("om")){y+=68;T("Output",L,y,{s:30});U(v("ov"),260,400,y,30);T("V @",410,y,{s:30});U(v("om"),485,590,y,30);T("ms",598,y,{s:30})}
+  y+=68;T("Sensitivity",L,y,{s:30});U(v("sens")||"-",400,560,y,30);T("mV",570,y,{s:30});
 
   const bb=y+56;c.strokeStyle=BLUE;c.lineWidth=6;c.strokeRect(44,top,1082,bb-top);
   let lines=[];if($("noep").checked)lines.push("No episode");
@@ -187,22 +208,17 @@ function pdfBlob(jpg,w,h){
   add(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
   return new Blob(parts,{type:"application/pdf"});
 }
-async function out(blob,name){
-  let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
-  if(dl){await dl.save({filename:name,data:blob});return}
-  const f=new File([blob],name,{type:blob.type});
-  if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000)
-}
 async function save(fmt){
+  let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
+  if(!dl){say("Saving is not available in this view");return}
   redraw();const base="EV-ICD_FU_"+($("date").value||"form");
   try{
-    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await out(b,base+".png")}
+    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await dl.save({filename:base+".png",data:b})}
     else{const bin=atob(cv.toDataURL("image/jpeg",0.95).split(",")[1]),u=new Uint8Array(bin.length);
       for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
-      await out(pdfBlob(u,cv.width,cv.height),base+".pdf")}
+      await dl.save({filename:base+".pdf",data:pdfBlob(u,cv.width,cv.height)})}
     say("Saved");
-  }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save the file")}
+  }catch(e){say(e&&e.code==="declined"?"Cancelled":"Could not save the file")}
 }
 $("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
 
@@ -211,11 +227,14 @@ function summary(){
   return ["EV-ICD F/U  "+(fd($("date").value)||"-"),
    "Model: "+n("model")+"  DOI: "+(fd($("doi").value)||"-"),
    "Mode: "+n("pm")+"  Rate: "+n("rate")+" bpm  Rhythm: "+n("rhythm"),
-   "Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":n("yrs")+" yrs")+")",
-   "Charge time: "+n("chg")+" sec @ "+n("chgj")+" J  V-pace: "+n("vpace")+" %",
+   "Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":(($("gt").checked&&v("yrs"))?">":"")+n("yrs")+" "+($("yru").value==="month"?"mo":"yrs"))+")",
+   v("vpace")?("V-pace episode: "+n("vpace")):"",
    "Sensing R wave",vec("R1-R2","s1","p1","c1"),vec("R1-Can","s2","p2","c2"),vec("R2-Can","s3","p3","c3"),
    "Impedance: R1-R2 "+n("i1")+" Ω, R1-Coil2 "+n("i2")+" Ω, HV "+n("i3")+" Ω",
-   "Threshold: "+n("t1v")+" V @ "+n("t1m")+" ms / "+n("t2v")+" V @ "+n("t2m")+" ms",
+   (v("t1v")||v("t1m"))?("Threshold: "+n("t1v")+" V @ "+n("t1m")+" ms"):"",
+   "Setting",
+   (v("ov")||v("om"))?("Output: "+n("ov")+" V @ "+n("om")+" ms"):"",
+   "Sensitivity: "+n("sens")+" mV",
    $("noep").checked?"No episode":"",v("note")].filter(Boolean).join("\n");
 }
 $("copy").onclick=async()=>{const t=summary();
@@ -224,7 +243,6 @@ $("copy").onclick=async()=>{const t=summary();
     try{document.execCommand("copy");say("Copied")}catch(_){say("Copy failed")}a.remove()}};
 $("clear").onclick=()=>{document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
   document.querySelectorAll("input[type=checkbox]").forEach(e=>e.checked=false);$("date").value=today();sync();redraw();say("Cleared")};
-if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 </body>
 </html>
