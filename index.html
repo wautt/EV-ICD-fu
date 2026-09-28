@@ -233,19 +233,30 @@ async function save(fmt){
 $("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
 
 function summary(){
-  const n=x=>v(x)||"-",vec=(a,s,p,k)=>a+" "+n(s)+" mV, no PWOs at "+n(p)+" mV"+($(k).checked?" [current vector]":"")+($("vn"+k.slice(1)).checked&&v("vt"+k.slice(1))?" | Note: "+v("vt"+k.slice(1)):"");
-  return ["EV-ICD F/U  "+(fd($("date").value)||"-"),
-   "Model: "+n("model")+"  DOI: "+(fd($("doi").value)||"-"),
-   "Mode: "+n("pm")+"  Rate: "+n("rate")+" bpm  Rhythm: "+n("rhythm"),
-   "Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":(($("gt").checked&&v("yrs"))?">":"")+n("yrs")+" "+($("yru").value==="month"?"mo":"yrs"))+")",
-   v("vpace")?("V-pace episode: "+n("vpace")):"",
-   "Sensing R wave",vec("R1-R2","s1","p1","c1"),vec("R1-Can","s2","p2","c2"),vec("R2-Can","s3","p3","c3"),
-   "Impedance: R1-R2 "+n("i1")+" Ω, R1-Coil2 "+n("i2")+" Ω, HV "+n("i3")+" Ω",
-   (v("t1v")||v("t1m"))?("Threshold: "+n("t1v")+" V @ "+n("t1m")+" ms"):"",
-   "Setting",
-   (v("ov")||v("om"))?("Output: "+n("ov")+" V @ "+n("om")+" ms"):"",
-   "Sensitivity: "+n("sens")+" mV",
-   $("noep").checked?"No episode":"",v("note")].filter(Boolean).join("\n");
+  const n=x=>v(x)||"-",IND=" ".repeat(21),L=[];
+  L.push("EV-ICD F/U  "+(fd($("date").value)||"-"),"");
+  L.push("Model: "+n("model")+"  DOI: "+(fd($("doi").value)||"-"));
+  L.push("Mode: "+n("pm")+"  Rate: "+n("rate")+" bpm");
+  L.push("Rhythm: "+n("rhythm"));
+  L.push("Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":(($("gt").checked&&v("yrs"))?">":"")+n("yrs")+" "+($("yru").value==="month"?"mo":"yrs"))+")");
+  const ct=[v("chg")&&(v("chg")+" sec"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" ");
+  if(ct)L.push("Charge time: "+ct);
+  if(v("vpace"))L.push("V-pace episode: "+v("vpace"));
+  L.push("","Sensing R wave");
+  [["R1-R2","s1","p1","c1"],["R1-Can","s2","p2","c2"],["R2-Can","s3","p3","c3"]].forEach(r=>{
+    const k=r[3].slice(1);
+    L.push(r[0]+" "+n(r[1])+" mV,","no PWOs at "+n(r[2])+" mV"+($(r[3]).checked?" [current vector]":""));
+    if($("vn"+k).checked&&v("vt"+k))L.push("| Note: "+v("vt"+k));
+    L.push("");
+  });
+  L.push("Impedance: R1-R2 "+n("i1")+" Ω,",IND+"R1-Coil2 "+n("i2")+" Ω,",IND+"HV "+n("i3")+" Ω");
+  if(v("t1v")||v("t1m"))L.push("Threshold: "+n("t1v")+" V @ "+n("t1m")+" ms");
+  L.push("Setting");
+  if(v("ov")||v("om"))L.push("Output: "+n("ov")+" V @ "+n("om")+" ms");
+  L.push("Sensitivity: "+n("sens")+" mV");
+  const tail=[];if($("noep").checked)tail.push("No episode");if(v("note"))tail.push(v("note"));
+  if(tail.length)L.push("",...tail);
+  return L.join("\n");
 }
 $("copy").onclick=async()=>{const t=summary();
   try{await navigator.clipboard.writeText(t);say("Copied")}
