@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EV-ICD Follow-up Form</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#233a8f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#eef0f5;--paper:#fff;--ink:#1c2233;--pen:#1f3fa8;--line:#c9ceda;--mute:#5f677a;--acc:#233a8f;--accfg:#fff;--fill:#f4f6fb;--head:#e6eaf6}
@@ -208,17 +213,22 @@ function pdfBlob(jpg,w,h){
   add(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
   return new Blob(parts,{type:"application/pdf"});
 }
-async function save(fmt){
+async function out(blob,name){
   let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
-  if(!dl){say("Saving is not available in this view");return}
+  if(dl){await dl.save({filename:name,data:blob});return}
+  const f=new File([blob],name,{type:blob.type});
+  if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000)
+}
+async function save(fmt){
   redraw();const base="EV-ICD_FU_"+($("date").value||"form");
   try{
-    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await dl.save({filename:base+".png",data:b})}
+    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await out(b,base+".png")}
     else{const bin=atob(cv.toDataURL("image/jpeg",0.95).split(",")[1]),u=new Uint8Array(bin.length);
       for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
-      await dl.save({filename:base+".pdf",data:pdfBlob(u,cv.width,cv.height)})}
+      await out(pdfBlob(u,cv.width,cv.height),base+".pdf")}
     say("Saved");
-  }catch(e){say(e&&e.code==="declined"?"Cancelled":"Could not save the file")}
+  }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save the file")}
 }
 $("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
 
@@ -243,6 +253,7 @@ $("copy").onclick=async()=>{const t=summary();
     try{document.execCommand("copy");say("Copied")}catch(_){say("Copy failed")}a.remove()}};
 $("clear").onclick=()=>{document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
   document.querySelectorAll("input[type=checkbox]").forEach(e=>e.checked=false);$("date").value=today();sync();redraw();say("Cleared")};
+if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 </body>
 </html>
