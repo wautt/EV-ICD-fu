@@ -256,7 +256,7 @@ function waveletInfo(){if(!$("wven").checked)return null;
     const c=document.createElement("div");c.className="dzc";
     c.innerHTML='<label class="dzen"><input type="checkbox" id="dz'+k+'en" aria-label="Enable '+lab+'">'+lab+'</label>'+
       '<div class="dzbody" id="dz'+k+'body" hidden>'+
-      '<div class="dzrow"><select class="in" id="dz'+k+'m" aria-label="'+lab+' mode"><option value="">-</option><option>On</option><option>Off</option><option>via VF</option><option>via VT</option></select>'+
+      '<div class="dzrow"><select class="in" id="dz'+k+'m" aria-label="'+lab+' mode"><option value="">-</option><option>On</option><option>Off</option>'+(k==="fvt"?'<option>via VF</option><option>via VT</option>':'')+'</select>'+
       '<input class="in" id="dz'+k+'r" inputmode="text" placeholder="e.g. 200-250" aria-label="'+lab+' rate bpm">'+
       '<span class="hd" style="flex:0 0 auto">bpm</span></div>'+
       (hasRx?([1,2,3,4,5,6].map(i=>'<div class="dzrx"><span class="dzlab">RX'+i+'</span>'+
