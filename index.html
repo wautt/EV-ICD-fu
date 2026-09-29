@@ -71,6 +71,7 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </head>
 <body>
 <main>
+<p style="margin:2px 4px 10px;font-size:13px;color:var(--mute)">Developed by Autthapol K.</p>
 <div class="sec"><h2>Device</h2><div class="body g2">
   <label class="f"><span>Model</span><input class="in" id="model" value="DVEA3E4" readonly></label>
   <label class="f"><span>Follow up date</span><input class="in" type="date" id="date"></label>
@@ -205,6 +206,11 @@ function render(cv,H){
 
 
   y+=94;T("Impedance(Ω)",L,y,{c:INK,w:700,s:36});
+  if($("wven").checked){const X=650,wy=y;
+    T("Wavelet",X,wy,{c:INK,w:700,s:36});
+    T("Wavelet vector",X,wy+68,{s:30});U(v("wvvec")||"-",X+215,R,wy+68,30);
+    T("% Matching",X,wy+136,{s:30});U(v("wvpct")||"-",X+215,R-40,wy+136,30);T("%",R-30,wy+136,{s:30});
+  }
   [["Ring1 to Ring2","i1"],["Ring1 to Coil2","i2"],["High Voltage","i3"]].forEach(r=>{
     y+=68;T(r[0],L,y,{s:30});U(v(r[1]),300,560,y,30);T("Ω",570,y,{s:30});
   });
@@ -215,8 +221,6 @@ function render(cv,H){
   y+=94;T("Setting",L,y,{c:INK,w:700,s:36});
   if(v("ov")||v("om")){y+=68;T("Output",L,y,{s:30});U(v("ov"),260,400,y,30);T("V @",410,y,{s:30});U(v("om"),485,590,y,30);T("ms",598,y,{s:30})}
   y+=68;T("Sensitivity",L,y,{s:30});U(v("sens")||"-",400,560,y,30);T("mV",570,y,{s:30});
-  const wv=waveletInfo();
-  if(wv){T(wv.l1,650,y,{c:INK,w:500,s:26});if(wv.l2){y+=40;T(wv.l2,650,y,{c:INK,w:500,s:26})}}
   const zl=DZ.map(z=>zoneLine(z[0],z[1])).filter(Boolean);
   if(zl.length){y+=94;T("Detection",L,y,{c:INK,w:700,s:36});T("Rates",354,y,{c:INK,w:700,s:36});T("Therapies",590,y,{c:INK,w:700,s:36});
     const avail=R-590;
@@ -233,6 +237,9 @@ function render(cv,H){
   return Math.ceil(e);
 }
 const DZ=[["vf","VF"],["fvt","FVT"],["vt","VT"],["vtm","VT Monitor"]];
+function rxPh(sel){const m=sel.id.match(/^dz(\w+?)s(\d)$/);if(!m)return;const inp=document.getElementById("dz"+m[1]+"v"+m[2]);if(!inp)return;
+  inp.placeholder=sel.value==="J"?"e.g. 40":(sel.value==="B"||sel.value==="R")?"e.g. 15":""}
+document.addEventListener("change",e=>{if(e.target.tagName==="SELECT")rxPh(e.target)});
 document.getElementById("wven").addEventListener("change",e=>{document.getElementById("wvbody").hidden=!e.target.checked;redraw()});
 document.getElementById("minen").addEventListener("change",e=>{document.getElementById("minrow").hidden=!e.target.checked;redraw()});
 function unitWord(val,sel){const n=parseFloat(val);if(sel!=="month")return n>1?"yrs":"yr";return n>1?"months":"month"}
@@ -251,7 +258,7 @@ function waveletInfo(){if(!$("wven").checked)return null;
       '<span class="hd" style="flex:0 0 auto">bpm</span></div>'+
       (hasRx?([1,2,3,4,5,6].map(i=>'<div class="dzrx"><span class="dzlab">RX'+i+'</span>'+
         '<select class="in" id="dz'+k+'s'+i+'" aria-label="'+lab+' RX'+i+' type">'+TYPES+'</select>'+
-        '<input class="in" id="dz'+k+'v'+i+'" inputmode="decimal" placeholder="e.g. 40" aria-label="'+lab+' RX'+i+' value"></div>').join("")+
+        '<input class="in" id="dz'+k+'v'+i+'" inputmode="decimal" aria-label="'+lab+' RX'+i+' value"></div>').join("")+
       '<button type="button" class="ghost dzfill" id="dz'+k+'fill">Fill RX2-6 same as RX1</button>'):"")+
       '</div>';
     w.appendChild(c);
@@ -260,7 +267,7 @@ function waveletInfo(){if(!$("wven").checked)return null;
     });
     if(hasRx)document.getElementById("dz"+k+"fill").addEventListener("click",()=>{
       const t=$("dz"+k+"s1").value,val=v("dz"+k+"v1");
-      for(let i=2;i<=6;i++){$("dz"+k+"s"+i).value=t;$("dz"+k+"v"+i).value=val}
+      for(let i=2;i<=6;i++){$("dz"+k+"s"+i).value=t;$("dz"+k+"v"+i).value=val;rxPh($("dz"+k+"s"+i))}
       redraw();
     });
   });
