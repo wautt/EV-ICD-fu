@@ -4,12 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EV-ICD Follow-up Form</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="theme-color" content="#233a8f">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#eef0f5;--paper:#fff;--ink:#1c2233;--pen:#1f3fa8;--line:#c9ceda;--mute:#5f677a;--acc:#233a8f;--accfg:#fff;--fill:#f4f6fb;--head:#e6eaf6}
@@ -53,6 +48,18 @@ button{font:inherit;font-weight:500;padding:10px 14px;border-radius:6px;border:1
 button.ghost{background:transparent;color:var(--acc)}
 button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 #msg{color:var(--mute);font-size:14px}
+.dzc{border:1.5px solid var(--line);border-radius:8px;padding:12px;margin-top:10px}
+.dzc .dzh{font-weight:700;margin-bottom:10px;font-size:16px}
+.dzc .dzrow{display:flex;gap:8px;margin-bottom:10px}
+.dzc .dzrow .in{flex:1;min-width:0}
+.dzrx{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.dzrx .dzlab{flex:0 0 38px;font-size:13px;color:var(--mute);font-weight:600}
+.dzrx select.in{flex:0 0 92px;font-size:15px;padding:9px 4px}
+.dzrx input.in{flex:1;min-width:0;font-size:16px}
+.dzen{display:flex;align-items:center;gap:8px;min-height:32px;font-weight:700;font-size:16px;margin-bottom:2px}
+.dzen input{width:22px;height:22px;accent-color:var(--acc)}
+.dzbody{margin-top:10px}
+.dzfill{font-size:13px;font-weight:500;padding:7px 12px;min-height:36px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -110,6 +117,8 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
     <span class="hd" style="flex:0 0 auto">ms</span>
   </div>
   <label class="f"><span>Sensitivity (mV)</span><input class="in" id="sens" inputmode="decimal" aria-label="Sensitivity mV"></label>
+  <div class="f" style="margin-top:14px"><span>Detection zone</span></div>
+  <div id="dzwrap"></div>
 </div></div>
 
 <div class="sec"><h2>Note</h2><div class="body">
@@ -153,7 +162,7 @@ function render(cv,H){
   F("Follow up date",fd($("date").value),484,R,top+88);
   let y=top+178;T("EV-ICD F/U",74,y,{s:40,w:700});ln(L,R,y+24);
   y+=98;F("Model",v("model"),L,570,y);F("DOI",fd($("doi").value),600,R,y);
-  y+=74;F("Mode",v("pm"),L,570,y);F("Rate",v("rate"),600,R,y,"bpm");
+  y+=74;F("Mode",v("pm"),L,570,y);if(v("rate"))F("Rate",v("rate"),600,R,y,"bpm");
   y+=74;F("Battery",v("batt"),L,570,y,"V");
   if($("init").checked)F("est.","Initializing",600,R,y);
   else{const gt=($("gt").checked&&v("yrs"))?">":"",unit=$("yru").value==="month"?"mo":"yrs";F("est.",v("yrs")?gt+v("yrs"):"",600,R,y,unit)}
@@ -180,6 +189,13 @@ function render(cv,H){
   y+=94;T("Setting",L,y,{c:INK,w:700,s:36});
   if(v("ov")||v("om")){y+=68;T("Output",L,y,{s:30});U(v("ov"),260,400,y,30);T("V @",410,y,{s:30});U(v("om"),485,590,y,30);T("ms",598,y,{s:30})}
   y+=68;T("Sensitivity",L,y,{s:30});U(v("sens")||"-",400,560,y,30);T("mV",570,y,{s:30});
+  const zl=DZ.map(z=>zoneLine(z[0],z[1])).filter(Boolean);
+  if(zl.length){y+=94;T("Detection",L,y,{c:INK,w:700,s:36});T("Rates",354,y,{c:INK,w:700,s:36});T("Therapies",590,y,{c:INK,w:700,s:36});
+    const avail=R-590;
+    zl.forEach(r=>{y+=56;T(r.lab,L,y,{c:INK,w:600,s:27});T(r.mode,L+150,y,{c:INK,w:400,s:27});T(r.rate,354,y,{c:INK,w:400,s:24});
+      let fs=25,tw=M(r.th,fs,500);if(tw>avail)fs=Math.max(14,Math.floor(fs*avail/tw));
+      T(r.th,590,y,{c:INK,w:500,s:fs})})
+  }
 
   const bb=y+56;c.strokeStyle=BLUE;c.lineWidth=6;c.strokeRect(44,top,1082,bb-top);
   let lines=[];if($("noep").checked)lines.push("No episode");
@@ -187,6 +203,45 @@ function render(cv,H){
   let e=bb+40;
   if(lines.length){let fy=bb+66;lines.forEach(t=>{T(t,60,fy,{c:INK,w:600,s:36});fy+=52});e=fy-8}
   return Math.ceil(e);
+}
+const DZ=[["vf","VF"],["fvt","FVT"],["vt","VT"],["vtm","VT Monitor"]];
+(function buildZones(){
+  const w=document.getElementById("dzwrap"),TYPES='<option value="">-</option><option value="J">Joules</option><option value="B">Burst</option><option value="P">Ramp+</option><option value="R">Ramp</option>';
+  DZ.forEach(([k,lab])=>{
+    const hasRx=k!=="vtm";
+    const c=document.createElement("div");c.className="dzc";
+    c.innerHTML='<label class="dzen"><input type="checkbox" id="dz'+k+'en" aria-label="Enable '+lab+'">'+lab+'</label>'+
+      '<div class="dzbody" id="dz'+k+'body" hidden>'+
+      '<div class="dzrow"><select class="in" id="dz'+k+'m" aria-label="'+lab+' mode"><option value="">-</option><option>On</option><option>Off</option><option>via VF</option><option>via VT</option></select>'+
+      '<input class="in" id="dz'+k+'r" inputmode="text" placeholder="e.g. 200-250" aria-label="'+lab+' rate bpm">'+
+      '<span class="hd" style="flex:0 0 auto">bpm</span></div>'+
+      (hasRx?([1,2,3,4,5,6].map(i=>'<div class="dzrx"><span class="dzlab">RX'+i+'</span>'+
+        '<select class="in" id="dz'+k+'s'+i+'" aria-label="'+lab+' RX'+i+' type">'+TYPES+'</select>'+
+        '<input class="in" id="dz'+k+'v'+i+'" inputmode="decimal" placeholder="e.g. 40" aria-label="'+lab+' RX'+i+' value"></div>').join("")+
+      '<button type="button" class="ghost dzfill" id="dz'+k+'fill">Fill RX2-6 same as RX1</button>'):"")+
+      '</div>';
+    w.appendChild(c);
+    document.getElementById("dz"+k+"en").addEventListener("change",e=>{
+      document.getElementById("dz"+k+"body").hidden=!e.target.checked;redraw();
+    });
+    if(hasRx)document.getElementById("dz"+k+"fill").addEventListener("click",()=>{
+      const t=$("dz"+k+"s1").value,val=v("dz"+k+"v1");
+      for(let i=2;i<=6;i++){$("dz"+k+"s"+i).value=t;$("dz"+k+"v"+i).value=val}
+      redraw();
+    });
+  });
+})();
+function buildTherapies(k){
+  const out=[];
+  for(let i=1;i<=6;i++){const el=document.getElementById("dz"+k+"v"+i);if(!el)break;
+    const val=v("dz"+k+"v"+i),t=$("dz"+k+"s"+i).value;if(!val||!t)continue;
+    const last=out[out.length-1];
+    if(t==="J"&&last&&last.t==="J"&&last.v===val)last.c++;else out.push({t,v:val,c:1})}
+  return out.map(o=>o.t==="J"?(o.v+"J"+(o.c>1?" x "+o.c:"")):o.t==="B"?("Burst("+o.v+")"):o.t==="P"?("Ramp+("+o.v+")"):("Ramp("+o.v+")")).join(", ")
+}
+function zoneLine(k,lab){
+  if(!$("dz"+k+"en").checked)return null;
+  return{lab,mode:v("dz"+k+"m")||"-",rate:v("dz"+k+"r")?v("dz"+k+"r")+" bpm":"-",th:buildTherapies(k)||"-"}
 }
 const cv=$("cv"),sc=document.createElement("canvas");let raf=0;
 function redraw(){const H=render(sc,3200);render(cv,H)}
@@ -213,22 +268,17 @@ function pdfBlob(jpg,w,h){
   add(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
   return new Blob(parts,{type:"application/pdf"});
 }
-async function out(blob,name){
-  let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
-  if(dl){await dl.save({filename:name,data:blob});return}
-  const f=new File([blob],name,{type:blob.type});
-  if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000)
-}
 async function save(fmt){
+  let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
+  if(!dl){say("Saving is not available in this view");return}
   redraw();const base="EV-ICD_FU_"+($("date").value||"form");
   try{
-    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await out(b,base+".png")}
+    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await dl.save({filename:base+".png",data:b})}
     else{const bin=atob(cv.toDataURL("image/jpeg",0.95).split(",")[1]),u=new Uint8Array(bin.length);
       for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
-      await out(pdfBlob(u,cv.width,cv.height),base+".pdf")}
+      await dl.save({filename:base+".pdf",data:pdfBlob(u,cv.width,cv.height)})}
     say("Saved");
-  }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save the file")}
+  }catch(e){say(e&&e.code==="declined"?"Cancelled":"Could not save the file")}
 }
 $("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
 
@@ -236,7 +286,7 @@ function summary(){
   const n=x=>v(x)||"-",IND=" ".repeat(21),L=[];
   L.push("EV-ICD F/U  "+(fd($("date").value)||"-"),"");
   L.push("Model: "+n("model")+"  DOI: "+(fd($("doi").value)||"-"));
-  L.push("Mode: "+n("pm")+"  Rate: "+n("rate")+" bpm");
+  L.push("Mode: "+n("pm")+(v("rate")?("  Rate: "+n("rate")+" bpm"):""));
   L.push("Rhythm: "+n("rhythm"));
   L.push("Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":(($("gt").checked&&v("yrs"))?">":"")+n("yrs")+" "+($("yru").value==="month"?"mo":"yrs"))+")");
   const ct=[v("chg")&&(v("chg")+" sec"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" ");
@@ -254,6 +304,12 @@ function summary(){
   L.push("Setting");
   if(v("ov")||v("om"))L.push("Output: "+n("ov")+" V @ "+n("om")+" ms");
   L.push("Sensitivity: "+n("sens")+" mV");
+  const zl2=DZ.map(z=>zoneLine(z[0],z[1])).filter(Boolean);
+  if(zl2.length){
+    const pad=(t,n)=>t.length>=n?t+" ":t+" ".repeat(n-t.length);
+    L.push("",pad("Detection",22)+pad("Rates",16)+"Therapies");
+    zl2.forEach(r=>{L.push(pad(r.lab,12)+pad(r.mode,10)+pad(r.rate,16)+r.th)})
+  }
   const tail=[];if($("noep").checked)tail.push("No episode");if(v("note"))tail.push(v("note"));
   if(tail.length)L.push("",...tail);
   return L.join("\n");
@@ -264,7 +320,6 @@ $("copy").onclick=async()=>{const t=summary();
     try{document.execCommand("copy");say("Copied")}catch(_){say("Copy failed")}a.remove()}};
 $("clear").onclick=()=>{document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
   document.querySelectorAll("input[type=checkbox]").forEach(e=>e.checked=false);$("date").value=today();sync();redraw();say("Cleared")};
-if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 </body>
 </html>
