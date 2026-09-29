@@ -302,22 +302,26 @@ function pdfBlob(jpg,w,h){
   add(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
   return new Blob(parts,{type:"application/pdf"});
 }
+function dlLink(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)}
 async function out(blob,name){
   let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
   if(dl){await dl.save({filename:name,data:blob});return}
   const f=new File([blob],name,{type:blob.type});
-  if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000)
+  if(navigator.canShare&&navigator.canShare({files:[f]})&&/Android|iPhone|iPad|Macintosh/i.test(navigator.userAgent)&&("ontouchend" in document)){
+    try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")throw e}
+  }
+  dlLink(blob,name)
 }
 async function save(fmt){
-  redraw();const base="EV-ICD_FU_"+($("date").value||"form");
+  const base="EV-ICD_FU_"+($("date").value||"form");
   try{
-    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await out(b,base+".png")}
+    redraw();
+    let blob;
+    if(fmt==="png")blob=await new Promise((r,j)=>cv.toBlob(b=>b?r(b):j(new Error("toBlob")),"image/png"));
     else{const bin=atob(cv.toDataURL("image/jpeg",0.95).split(",")[1]),u=new Uint8Array(bin.length);
-      for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
-      await out(pdfBlob(u,cv.width,cv.height),base+".pdf")}
-    say("Saved");
-  }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save the file")}
+      for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);blob=pdfBlob(u,cv.width,cv.height)}
+    await out(blob,base+"."+fmt);say("Saved");
+  }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save: "+((e&&e.message)||e))}
 }
 $("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
 
@@ -341,14 +345,16 @@ function summary(){
   });
   L.push("Impedance: R1-R2 "+n("i1")+" Ω,",IND+"R1-Coil2 "+n("i2")+" Ω,",IND+"HV "+n("i3")+" Ω");
   if(v("t1v")||v("t1m"))L.push("Threshold: "+n("t1v")+" V @ "+n("t1m")+" ms");
-  L.push("Setting");
+  L.push("","Setting");
   if(v("ov")||v("om"))L.push("Output: "+n("ov")+" V @ "+n("om")+" ms");
-  {const wv=waveletInfo();L.push("Sensitivity: "+n("sens")+" mV"+(wv?("   "+wv.l1):""));if(wv&&wv.l2)L.push(IND+wv.l2)}
+  L.push("Sensitivity: "+n("sens")+" mV");
+  {const wv=waveletInfo();if(wv){L.push(wv.l1);if(wv.l2)L.push(wv.l2)}}
   const zl2=DZ.map(z=>zoneLine(z[0],z[1])).filter(Boolean);
   if(zl2.length){
-    const pad=(t,n)=>t.length>=n?t+" ":t+" ".repeat(n-t.length);
-    L.push("",pad("Detection",22)+pad("Rates",16)+"Therapies");
-    zl2.forEach(r=>{L.push(pad(r.lab,12)+pad(r.mode,10)+pad(r.rate,16)+r.th)})
+    const pad=(t,w)=>t+" ".repeat(Math.max(2,w-t.length));
+    const c1=zl2.map(r=>"- "+r.lab+" "+r.mode),w1=Math.max(9,...c1.map(t=>t.length))+2,w2=Math.max(5,...zl2.map(r=>r.rate.length))+3;
+    L.push("",pad("Detection",w1)+pad("Rates",w2)+"Therapies");
+    zl2.forEach((r,i)=>{L.push((r.th&&r.th!=="-")?pad(c1[i],w1)+pad(r.rate,w2)+r.th:(pad(c1[i],w1)+r.rate).trimEnd())})
   }
   const tail=[];if($("noep").checked)tail.push("No episode");if(v("note"))tail.push(v("note"));
   if(tail.length)L.push("",...tail);
