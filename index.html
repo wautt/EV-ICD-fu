@@ -125,6 +125,18 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   <input class="in" id="t1v" inputmode="decimal" aria-label="Threshold volts"><input class="in" id="t1m" inputmode="decimal" aria-label="Threshold pulse width ms">
 </div></div></div>
 
+<div class="sec"><h2>Wavelet</h2><div class="body">
+  <div class="dzc" style="margin-top:0">
+    <label class="dzen"><input type="checkbox" id="wven" aria-label="Enable Wavelet">Wavelet</label>
+    <div class="dzbody" id="wvbody" hidden>
+      <label class="f" style="margin-bottom:10px"><span>Wavelet vector(EGM2)</span>
+        <select class="in" id="wvvec" aria-label="Wavelet vector"><option selected>Coil2 to Can</option><option>Ring1 to Ring2</option><option>Ring1 to Coil1</option><option>Ring1 to Coil2</option><option>Coil1 to Can</option><option>Ring1 to Can</option><option>Ring2 to Can</option><option>Coil2 to Coil1</option></select>
+      </label>
+      <label class="f"><span>% Matching</span><input class="in" id="wvpct" inputmode="decimal" aria-label="Wavelet percent matching"></label>
+    </div>
+  </div>
+</div></div>
+
 <div class="sec"><h2>Setting</h2><div class="body">
   <div class="tb th" style="margin-bottom:8px"><span class="hd">Output V @ ms</span></div>
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
@@ -134,15 +146,6 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
     <span class="hd" style="flex:0 0 auto">ms</span>
   </div>
   <label class="f"><span>Sensitivity (mV)</span><input class="in" id="sens" inputmode="decimal" aria-label="Sensitivity mV"></label>
-  <div class="dzc" style="margin-top:14px">
-    <label class="dzen"><input type="checkbox" id="wven" aria-label="Enable Wavelet">Wavelet</label>
-    <div class="dzbody" id="wvbody" hidden>
-      <label class="f" style="margin-bottom:10px"><span>Wavelet vector</span>
-        <select class="in" id="wvvec" aria-label="Wavelet vector"><option selected>Coil2 to Can</option><option>Ring1 to Ring2</option><option>Ring1 to Coil1</option><option>Ring1 to Coil2</option><option>Coil1 to Can</option><option>Ring1 to Can</option><option>Ring2 to Can</option><option>Coil2 to Coil1</option></select>
-      </label>
-      <label class="f"><span>% Matching</span><input class="in" id="wvpct" inputmode="decimal" aria-label="Wavelet percent matching"></label>
-    </div>
-  </div>
   <div class="f" style="margin-top:14px"><span>Detection zone</span></div>
   <div id="dzwrap"></div>
 </div></div>
@@ -206,10 +209,10 @@ function render(cv,H){
 
 
   y+=94;T("Impedance(Ω)",L,y,{c:INK,w:700,s:36});
-  if($("wven").checked){const X=650,wy=y;
+  if($("wven").checked){const X=615,wy=y;
     T("Wavelet",X,wy,{c:INK,w:700,s:36});
-    T("Wavelet vector",X,wy+68,{s:30});U(v("wvvec")||"-",X+215,R,wy+68,30);
-    T("% Matching",X,wy+136,{s:30});U(v("wvpct")||"-",X+215,R-40,wy+136,30);T("%",R-30,wy+136,{s:30});
+    T("Wavelet vector(EGM2)",X,wy+68,{s:28});U(v("wvvec")||"-",X+M("Wavelet vector(EGM2)",28)+10,R,wy+68,28);
+    T("% Matching",X,wy+136,{s:28});U(v("wvpct")||"-",X+M("Wavelet vector(EGM2)",28)+10,R-40,wy+136,28);T("%",R-30,wy+136,{s:28});
   }
   [["Ring1 to Ring2","i1"],["Ring1 to Coil2","i2"],["High Voltage","i3"]].forEach(r=>{
     y+=68;T(r[0],L,y,{s:30});U(v(r[1]),300,560,y,30);T("Ω",570,y,{s:30});
