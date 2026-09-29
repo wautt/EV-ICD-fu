@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EV-ICD Follow-up Form</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#233a8f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -34,7 +40,7 @@ select.in{-webkit-appearance:none;appearance:none}
 .ck input{width:28px;height:28px;accent-color:var(--acc)}
 .opt{display:flex;align-items:center;gap:8px;min-height:36px;font-size:15px}
 .opt input{width:20px;height:20px;accent-color:var(--acc)}
-textarea[hidden],.in[hidden]{display:none}
+[hidden]{display:none!important}
 .vn{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
 .in:disabled{opacity:.5}
 .big{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}
@@ -59,6 +65,7 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .dzen{display:flex;align-items:center;gap:8px;min-height:32px;font-weight:700;font-size:16px;margin-bottom:2px}
 .dzen input{width:22px;height:22px;accent-color:var(--acc)}
 .dzbody{margin-top:10px}
+.minrow{display:flex;gap:8px;align-items:center;margin-top:8px}
 .dzfill{font-size:13px;font-weight:500;padding:7px 12px;min-height:36px;margin-top:2px}
 </style>
 </head>
@@ -76,13 +83,22 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   <label class="f"><span>Charge energy (J)</span><input class="in" id="chgj" inputmode="decimal" placeholder="30"></label>
   <label class="f"><span>V-pace episode</span><input class="in" id="vpace" inputmode="decimal"></label>
 </div>
-  <div class="f" style="padding:14px 14px 0;margin-top:0"><label for="yrs" style="font-size:13px;color:var(--mute)">Est. longevity</label>
+<div class="body" style="padding-top:0">
+  <div class="f"><label for="yrs" style="font-size:13px;color:var(--mute)">Est. longevity</label>
     <div style="display:flex;gap:8px;align-items:center;margin-top:8px;margin-bottom:8px">
-      <label class="opt" style="gap:4px;min-height:48px"><input type="checkbox" id="gt" aria-label="Greater than">&gt;</label>
+      <label class="opt" style="gap:4px;min-height:48px"><input type="checkbox" id="lt" aria-label="Less than">&lt;</label>
       <input class="in" id="yrs" inputmode="decimal" style="flex:1;min-width:0">
       <select class="in" id="yru" style="flex:0 0 100px;padding:8px 6px" aria-label="Longevity unit"><option value="yrs">yrs</option><option value="month">month</option></select>
     </div>
     <label class="opt"><input type="checkbox" id="init">Initializing</label>
+  </div>
+  <div class="dzc" style="margin-top:14px">
+    <label class="dzen"><input type="checkbox" id="minen" aria-label="Enable Min">Min</label>
+    <div class="dzbody minrow" id="minrow" hidden>
+      <label class="opt" style="gap:4px;min-height:48px"><input type="checkbox" id="minlt" aria-label="Min less than">&lt;</label>
+      <input class="in" id="minval" inputmode="decimal" style="flex:1;min-width:0">
+      <select class="in" id="minu" style="flex:0 0 100px;padding:8px 6px" aria-label="Min longevity unit"><option value="yrs">yrs</option><option value="month">month</option></select>
+    </div>
   </div>
 </div></div>
 
@@ -117,6 +133,15 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
     <span class="hd" style="flex:0 0 auto">ms</span>
   </div>
   <label class="f"><span>Sensitivity (mV)</span><input class="in" id="sens" inputmode="decimal" aria-label="Sensitivity mV"></label>
+  <div class="dzc" style="margin-top:14px">
+    <label class="dzen"><input type="checkbox" id="wven" aria-label="Enable Wavelet">Wavelet</label>
+    <div class="dzbody" id="wvbody" hidden>
+      <label class="f" style="margin-bottom:10px"><span>Wavelet vector</span>
+        <select class="in" id="wvvec" aria-label="Wavelet vector"><option selected>Coil2 to Can</option><option>Ring1 to Ring2</option><option>Ring1 to Coil1</option><option>Ring1 to Coil2</option><option>Coil1 to Can</option><option>Ring1 to Can</option><option>Ring2 to Can</option><option>Coil2 to Coil1</option></select>
+      </label>
+      <label class="f"><span>% Matching</span><input class="in" id="wvpct" inputmode="decimal" aria-label="Wavelet percent matching"></label>
+    </div>
+  </div>
   <div class="f" style="margin-top:14px"><span>Detection zone</span></div>
   <div id="dzwrap"></div>
 </div></div>
@@ -165,7 +190,8 @@ function render(cv,H){
   y+=74;F("Mode",v("pm"),L,570,y);if(v("rate"))F("Rate",v("rate"),600,R,y,"bpm");
   y+=74;F("Battery",v("batt"),L,570,y,"V");
   if($("init").checked)F("est.","Initializing",600,R,y);
-  else{const gt=($("gt").checked&&v("yrs"))?">":"",unit=$("yru").value==="month"?"mo":"yrs";F("est.",v("yrs")?gt+v("yrs"):"",600,R,y,unit)}
+  else{const lt=($("lt").checked&&v("yrs"))?"<":"",unit=unitWord(v("yrs"),$("yru").value);F("est.",v("yrs")?lt+v("yrs"):"",600,R,y,unit)}
+  if($("minen").checked&&v("minval")){y+=74;const mlt=$("minlt").checked?"<":"";F("min",mlt+v("minval"),600,R,y,unitWord(v("minval"),$("minu").value))}
   y+=74;F("Charge time(s)",[v("chg"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" "),L,570,y);if(v("vpace"))F("V-pace episode",v("vpace"),600,R,y);
 
   y+=94;T("Sensing R wave",L,y,{c:INK,w:700,s:36});
@@ -189,6 +215,8 @@ function render(cv,H){
   y+=94;T("Setting",L,y,{c:INK,w:700,s:36});
   if(v("ov")||v("om")){y+=68;T("Output",L,y,{s:30});U(v("ov"),260,400,y,30);T("V @",410,y,{s:30});U(v("om"),485,590,y,30);T("ms",598,y,{s:30})}
   y+=68;T("Sensitivity",L,y,{s:30});U(v("sens")||"-",400,560,y,30);T("mV",570,y,{s:30});
+  const wv=waveletInfo();
+  if(wv){T(wv.l1,650,y,{c:INK,w:500,s:26});if(wv.l2){y+=40;T(wv.l2,650,y,{c:INK,w:500,s:26})}}
   const zl=DZ.map(z=>zoneLine(z[0],z[1])).filter(Boolean);
   if(zl.length){y+=94;T("Detection",L,y,{c:INK,w:700,s:36});T("Rates",354,y,{c:INK,w:700,s:36});T("Therapies",590,y,{c:INK,w:700,s:36});
     const avail=R-590;
@@ -205,8 +233,14 @@ function render(cv,H){
   return Math.ceil(e);
 }
 const DZ=[["vf","VF"],["fvt","FVT"],["vt","VT"],["vtm","VT Monitor"]];
+document.getElementById("wven").addEventListener("change",e=>{document.getElementById("wvbody").hidden=!e.target.checked;redraw()});
+document.getElementById("minen").addEventListener("change",e=>{document.getElementById("minrow").hidden=!e.target.checked;redraw()});
+function unitWord(val,sel){const n=parseFloat(val);if(sel!=="month")return n>1?"yrs":"yr";return n>1?"months":"month"}
+function waveletInfo(){if(!$("wven").checked)return null;
+  const vec=v("wvvec")||"-",pct=v("wvpct");
+  return{l1:"Wavelet: "+vec,l2:pct?("% Matching: "+pct+"%"):null}}
 (function buildZones(){
-  const w=document.getElementById("dzwrap"),TYPES='<option value="">-</option><option value="J">Joules</option><option value="B">Burst</option><option value="P">Ramp+</option><option value="R">Ramp</option>';
+  const w=document.getElementById("dzwrap"),TYPES='<option value="">-</option><option value="J">Joules</option><option value="B">Burst</option><option value="R">Ramp</option>';
   DZ.forEach(([k,lab])=>{
     const hasRx=k!=="vtm";
     const c=document.createElement("div");c.className="dzc";
@@ -237,7 +271,7 @@ function buildTherapies(k){
     const val=v("dz"+k+"v"+i),t=$("dz"+k+"s"+i).value;if(!val||!t)continue;
     const last=out[out.length-1];
     if(t==="J"&&last&&last.t==="J"&&last.v===val)last.c++;else out.push({t,v:val,c:1})}
-  return out.map(o=>o.t==="J"?(o.v+"J"+(o.c>1?" x "+o.c:"")):o.t==="B"?("Burst("+o.v+")"):o.t==="P"?("Ramp+("+o.v+")"):("Ramp("+o.v+")")).join(", ")
+  return out.map(o=>o.t==="J"?(o.v+"J"+(o.c>1?" x "+o.c:"")):o.t==="B"?("Burst("+o.v+")"):("Ramp("+o.v+")")).join(", ")
 }
 function zoneLine(k,lab){
   if(!$("dz"+k+"en").checked)return null;
@@ -268,17 +302,22 @@ function pdfBlob(jpg,w,h){
   add(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
   return new Blob(parts,{type:"application/pdf"});
 }
-async function save(fmt){
+async function out(blob,name){
   let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
-  if(!dl){say("Saving is not available in this view");return}
+  if(dl){await dl.save({filename:name,data:blob});return}
+  const f=new File([blob],name,{type:blob.type});
+  if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),8000)
+}
+async function save(fmt){
   redraw();const base="EV-ICD_FU_"+($("date").value||"form");
   try{
-    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await dl.save({filename:base+".png",data:b})}
+    if(fmt==="png"){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await out(b,base+".png")}
     else{const bin=atob(cv.toDataURL("image/jpeg",0.95).split(",")[1]),u=new Uint8Array(bin.length);
       for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
-      await dl.save({filename:base+".pdf",data:pdfBlob(u,cv.width,cv.height)})}
+      await out(pdfBlob(u,cv.width,cv.height),base+".pdf")}
     say("Saved");
-  }catch(e){say(e&&e.code==="declined"?"Cancelled":"Could not save the file")}
+  }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save the file")}
 }
 $("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
 
@@ -288,7 +327,8 @@ function summary(){
   L.push("Model: "+n("model")+"  DOI: "+(fd($("doi").value)||"-"));
   L.push("Mode: "+n("pm")+(v("rate")?("  Rate: "+n("rate")+" bpm"):""));
   L.push("Rhythm: "+n("rhythm"));
-  L.push("Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":(($("gt").checked&&v("yrs"))?">":"")+n("yrs")+" "+($("yru").value==="month"?"mo":"yrs"))+")");
+  L.push("Battery: "+n("batt")+" V (est. "+($("init").checked?"Initializing":(($("lt").checked&&v("yrs"))?"<":"")+n("yrs")+" "+unitWord(v("yrs"),$("yru").value))+")");
+  if($("minen").checked&&v("minval"))L.push("min "+($("minlt").checked?"<":"")+v("minval")+" "+unitWord(v("minval"),$("minu").value));
   const ct=[v("chg")&&(v("chg")+" sec"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" ");
   if(ct)L.push("Charge time: "+ct);
   if(v("vpace"))L.push("V-pace episode: "+v("vpace"));
@@ -303,7 +343,7 @@ function summary(){
   if(v("t1v")||v("t1m"))L.push("Threshold: "+n("t1v")+" V @ "+n("t1m")+" ms");
   L.push("Setting");
   if(v("ov")||v("om"))L.push("Output: "+n("ov")+" V @ "+n("om")+" ms");
-  L.push("Sensitivity: "+n("sens")+" mV");
+  {const wv=waveletInfo();L.push("Sensitivity: "+n("sens")+" mV"+(wv?("   "+wv.l1):""));if(wv&&wv.l2)L.push(IND+wv.l2)}
   const zl2=DZ.map(z=>zoneLine(z[0],z[1])).filter(Boolean);
   if(zl2.length){
     const pad=(t,n)=>t.length>=n?t+" ":t+" ".repeat(n-t.length);
@@ -320,6 +360,7 @@ $("copy").onclick=async()=>{const t=summary();
     try{document.execCommand("copy");say("Copied")}catch(_){say("Copy failed")}a.remove()}};
 $("clear").onclick=()=>{document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
   document.querySelectorAll("input[type=checkbox]").forEach(e=>e.checked=false);$("date").value=today();sync();redraw();say("Cleared")};
+if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 </body>
 </html>
