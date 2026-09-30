@@ -2,151 +2,181 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>EV-ICD Follow-up Form</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>EV-ICD Follow-up Form V02</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<meta name="theme-color" content="#233a8f">
+<meta name="theme-color" content="#1e3a96">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#eef0f5;--paper:#fff;--ink:#1c2233;--pen:#1f3fa8;--line:#c9ceda;--mute:#5f677a;--acc:#233a8f;--accfg:#fff;--fill:#f4f6fb;--head:#e6eaf6}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#262d40}}
-:root[data-theme="dark"]{--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#262d40}
+--bg:#e8eef8;--paper:#fff;--ink:#0f1f4d;--pen:#1a3aa0;--line:#c9d5ec;--mute:#5a6b8c;--acc:#1e3a96;--accfg:#fff;--fill:#f2f6fd;--head:#1e3a96;--headfg:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#2a4bb8;--headfg:#fff}}
+:root[data-theme="dark"]{--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#2a4bb8;--headfg:#fff}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.35 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:720px;margin:0 auto;padding:12px 12px 0}
-.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;margin-bottom:12px;overflow:hidden}
-.sec h2{margin:0;padding:9px 14px;font-size:15px;font-weight:600;background:var(--head)}
-.body{padding:12px 14px 14px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
-.f{display:flex;flex-direction:column;gap:3px;min-width:0}
-.f>span,.hd{font-size:13px;color:var(--mute)}
-.in{width:100%;font:inherit;font-size:17px;color:var(--pen);background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-height:44px}
-.in:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:1px;background:var(--paper)}
-.tb{display:grid;gap:8px 8px;align-items:center}
-.tb.s{grid-template-columns:minmax(76px,1.1fr) 1fr 1fr 56px}
-.tb.i{grid-template-columns:minmax(96px,1fr) 2fr}
-.tb.t{grid-template-columns:auto 1fr 1fr}
-.tb.th{grid-template-columns:1fr 1fr}
-select.in{-webkit-appearance:none;appearance:none}
-.rl{font-weight:600;font-size:15px}
-.hd{text-align:left}.hd.c{text-align:center}
-.ck{display:flex;justify-content:center}
-.ck input{width:28px;height:28px;accent-color:var(--acc)}
-.opt{display:flex;align-items:center;gap:8px;min-height:36px;font-size:15px}
-.opt input{width:20px;height:20px;accent-color:var(--acc)}
+body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.3 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:680px;margin:0 auto;padding:10px 10px 0}
+.credit{margin:0 4px 6px;font-size:11px;color:var(--mute)}
+.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.sec h2{margin:0;padding:7px 12px;font-size:13px;font-weight:600;background:var(--head);color:var(--headfg);letter-spacing:.3px}
+.sec{border-color:var(--head)}
+.topbar{background:var(--head);color:var(--headfg);margin:-10px -10px 10px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 10px}
+.topbar b{display:block;font-size:17px;letter-spacing:.3px}
+.topbar span{display:block;font-size:11px;opacity:.85}
+.topbar .ver{font-size:12px;font-weight:600;opacity:1;margin:1px 0 2px}
+.dzc{border-color:var(--line)}
+.dzen{color:var(--acc)}
+.body{padding:10px 12px 12px}
 [hidden]{display:none!important}
-.vn{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px 10px}
+.c2{grid-column:span 2}.c3{grid-column:span 3}.c6{grid-column:1/-1}
+.f{display:flex;flex-direction:column;gap:2px;min-width:0}
+.f>span,.hd,.f>label{font-size:11px;color:var(--mute);font-weight:500}
+.in{width:100%;min-width:0;font:inherit;font-size:16px;color:var(--pen);background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:4px 8px;height:36px}
+input[type=date].in{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;width:100%;padding:6px 9px;line-height:24px;text-align:left}
+input[type=date].in::-webkit-date-and-time-value{text-align:left;margin:0;min-height:26px}
+input[type=date].in::-webkit-calendar-picker-indicator{margin:0}
+.grid>*{min-width:0}
+.in:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:0;background:var(--paper)}
+select.in{-webkit-appearance:none;appearance:none;padding-right:18px;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 11px) 15px,calc(100% - 7px) 15px;background-size:4px 4px;background-repeat:no-repeat}
 .in:disabled{opacity:.5}
-.big{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}
-.big input{width:24px;height:24px;accent-color:var(--acc)}
-textarea{font:inherit;font-size:17px;color:var(--pen);background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:10px;width:100%;min-height:84px;resize:vertical;margin-bottom:8px}
-.pv{padding:10px;background:#fff}
+.line{display:flex;align-items:center;gap:6px}
+.line .in{flex:1}
+.u{font-size:11px;color:var(--mute);flex:0 0 auto}
+.opt{display:inline-flex;align-items:center;gap:5px;font-size:13px;min-height:30px;cursor:pointer;white-space:nowrap}
+.opt input,.ck input,.tg input{width:18px;height:18px;margin:0;accent-color:var(--acc)}
+.sub{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.tg{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px;min-height:28px;cursor:pointer}
+/* sensing table */
+.tb{display:grid;align-items:center;gap:6px 8px}
+.tb.s{grid-template-columns:72px 1fr 1fr 44px}
+.rl{font-weight:600;font-size:12px;line-height:1.2}
+.ck{display:flex;justify-content:center}
+.hd.c{text-align:center}
+.vn{grid-column:1/-1;display:flex;align-items:center;gap:6px;margin:-2px 0 3px}
+.vn .opt{font-size:11px;color:var(--mute);min-height:26px}
+.vn .opt input{width:17px;height:17px}
+.vn .in{height:34px;font-size:16px}
+/* cards used by Wavelet / Min / zones */
+.dzc{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:8px}
+.dzen{display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px;min-height:30px;cursor:pointer}
+.dzen input{width:18px;height:18px;margin:0;accent-color:var(--acc)}
+.dzbody{margin-top:8px}
+.minrow{display:flex;gap:6px;align-items:center}
+#dzwrap .dzbody{display:grid;grid-template-columns:1fr;gap:6px 10px}
+@media (min-width:520px){#dzwrap .dzbody{grid-template-columns:1fr 1fr}}
+.dzc .dzrow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.dzc .dzrow .in{flex:1 1 120px}
+.dzrx{display:flex;align-items:center;gap:4px;min-width:0}
+.dzrx .dzlab{flex:0 0 28px;font-size:11px;color:var(--mute);font-weight:600}
+.dzrx select.in{flex:0 0 80px;font-size:16px;padding:4px 16px 4px 6px}
+.dzrx input.in{flex:1}
+.dzfill{grid-column:1/-1;justify-self:start;font-size:12px;padding:5px 10px;min-height:32px}
+textarea{font:inherit;font-size:16px;color:var(--pen);background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%;min-height:64px;resize:vertical;margin-bottom:4px}
+.big{display:flex;align-items:center;gap:7px;min-height:30px;font-weight:600;font-size:13px}
+.big input{width:18px;height:18px;accent-color:var(--acc)}
+.pv{padding:6px;background:#fff}
 canvas{display:block;width:100%;height:auto}
-.bar{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 -12px}
-.bar .in-w{max-width:720px}
-button{font:inherit;font-weight:500;padding:10px 14px;border-radius:6px;border:1px solid var(--acc);background:var(--acc);color:var(--accfg);cursor:pointer;min-height:44px}
+.bar{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 -10px}
+button{font:inherit;font-size:13px;font-weight:600;padding:7px 10px;border-radius:6px;border:1px solid var(--acc);background:var(--acc);color:var(--accfg);cursor:pointer;min-height:36px}
 button.ghost{background:transparent;color:var(--acc)}
+.bar button{flex:1 1 0;white-space:nowrap}
+.bar #msg{flex-basis:100%;text-align:center}
+.bar #msg:empty{display:none}
 button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-#msg{color:var(--mute);font-size:14px}
-.dzc{border:1.5px solid var(--line);border-radius:8px;padding:12px;margin-top:10px}
-.dzc .dzh{font-weight:700;margin-bottom:10px;font-size:16px}
-.dzc .dzrow{display:flex;gap:8px;margin-bottom:10px}
-.dzc .dzrow .in{flex:1;min-width:0}
-.dzrx{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.dzrx .dzlab{flex:0 0 38px;font-size:13px;color:var(--mute);font-weight:600}
-.dzrx select.in{flex:0 0 92px;font-size:15px;padding:9px 4px}
-.dzrx input.in{flex:1;min-width:0;font-size:16px}
-.dzen{display:flex;align-items:center;gap:8px;min-height:32px;font-weight:700;font-size:16px;margin-bottom:2px}
-.dzen input{width:22px;height:22px;accent-color:var(--acc)}
-.dzbody{margin-top:10px}
-.minrow{display:flex;gap:8px;align-items:center;margin-top:8px}
-.dzfill{font-size:13px;font-weight:500;padding:7px 12px;min-height:36px;margin-top:2px}
+#msg{color:var(--mute);font-size:12px}
+input,select,textarea{font-size:16px!important}
+.seg{display:inline-flex;flex:0 0 auto;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--fill)}
+.seg button{background:transparent;color:var(--ink);border:0;border-left:1px solid var(--line);border-radius:0;min-height:34px;padding:5px 10px;font-size:13px;font-weight:600}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--acc);color:var(--accfg)}
+.dzrow .seg{flex:0 0 auto}
+.dzrx .seg button{padding:5px 8px}
+.qk{display:flex;flex-wrap:wrap;gap:6px;grid-column:1/-1}
+.qk button{font-size:12px;min-height:32px;padding:5px 10px}
+.minrow .seg,.line .seg{flex:0 0 auto}
 </style>
 </head>
 <body>
 <main>
-<p style="margin:2px 4px 10px;font-size:13px;color:var(--mute)">Developed by Autthapol K.</p>
-<div class="sec"><h2>Device</h2><div class="body g2">
-  <label class="f"><span>Model</span><input class="in" id="model" value="DVEA3E4" readonly></label>
-  <label class="f"><span>Follow up date</span><input class="in" type="date" id="date"></label>
-  <label class="f"><span>DOI</span><input class="in" type="date" id="doi"></label>
-  <label class="f"><span>Mode</span><input class="in" id="pm" value="OVO"></label>
-  <label class="f"><span>Rate (bpm)</span><input class="in" id="rate" inputmode="decimal"></label>
-  <label class="f"><span>Rhythm</span><input class="in" id="rhythm" placeholder="VS"></label>
-  <label class="f"><span>Battery (V)</span><input class="in" id="batt" inputmode="decimal"></label>
-  <label class="f"><span>Charge time (sec)</span><input class="in" id="chg" inputmode="decimal"></label>
-  <label class="f"><span>Charge energy (J)</span><input class="in" id="chgj" inputmode="decimal" placeholder="30"></label>
-  <label class="f"><span>V-pace episode</span><input class="in" id="vpace" inputmode="decimal"></label>
-</div>
-<div class="body" style="padding-top:0">
-  <div class="f"><label for="yrs" style="font-size:13px;color:var(--mute)">Est. longevity</label>
-    <div style="display:flex;gap:8px;align-items:center;margin-top:8px;margin-bottom:8px">
-      <label class="opt" style="gap:4px;min-height:48px"><input type="checkbox" id="lt" aria-label="Less than">&lt;</label>
-      <input class="in" id="yrs" inputmode="decimal" style="flex:1;min-width:0">
-      <select class="in" id="yru" style="flex:0 0 100px;padding:8px 6px" aria-label="Longevity unit"><option value="yrs">yrs</option><option value="month">month</option></select>
-    </div>
+<header class="topbar"><b>EV-ICD F/U</b><span class="ver">V02</span><span>Developed by Autthapol K.</span></header>
+
+<div class="sec"><h2>Device</h2><div class="body">
+ <div class="grid">
+  <label class="f c3"><span>Model</span><input class="in" id="model" value="DVEA3E4" readonly></label>
+  <label class="f c3"><span>Follow up date</span><input class="in" type="date" id="date"></label>
+  <label class="f c3"><span>DOI</span><input class="in" type="date" id="doi"></label>
+  <label class="f c3"><span>Mode</span><input class="in" id="pm" value="OVO"></label>
+  <label class="f c2"><span>Rate (bpm)</span><input class="in" id="rate" inputmode="decimal"></label>
+  <label class="f c2"><span>Rhythm</span><input class="in" id="rhythm" placeholder="VS"></label>
+  <label class="f c2"><span>Battery (V)</span><input class="in" id="batt" inputmode="decimal"></label>
+  <label class="f c2"><span>Charge time (sec)</span><input class="in" id="chg" inputmode="decimal"></label>
+  <label class="f c2"><span>Charge energy (J)</span><input class="in" id="chgj" inputmode="decimal" placeholder="30"></label>
+  <label class="f c2"><span>V-pace episode</span><input class="in" id="vpace" inputmode="decimal"></label>
+  <div class="f c6"><label for="yrs">Est. longevity</label>
+   <div class="line">
+    <label class="opt"><input type="checkbox" id="lt" aria-label="Less than">&lt;</label>
+    <input class="in" id="yrs" inputmode="decimal">
+    <select class="in" id="yru" style="flex:0 0 80px" aria-label="Longevity unit"><option value="yrs">yrs</option><option value="month">month</option></select>
     <label class="opt"><input type="checkbox" id="init">Initializing</label>
+   </div>
   </div>
-  <div class="dzc" style="margin-top:14px">
-    <label class="dzen"><input type="checkbox" id="minen" aria-label="Enable Min">Min</label>
-    <div class="dzbody minrow" id="minrow" hidden>
-      <label class="opt" style="gap:4px;min-height:48px"><input type="checkbox" id="minlt" aria-label="Min less than">&lt;</label>
-      <input class="in" id="minval" inputmode="decimal" style="flex:1;min-width:0">
-      <select class="in" id="minu" style="flex:0 0 100px;padding:8px 6px" aria-label="Min longevity unit"><option value="yrs">yrs</option><option value="month">month</option></select>
-    </div>
+ </div>
+ <div class="dzc">
+  <label class="dzen"><input type="checkbox" id="minen" aria-label="Enable Min">Min</label>
+  <div class="dzbody minrow" id="minrow" hidden>
+   <label class="opt"><input type="checkbox" id="minlt" aria-label="Min less than">&lt;</label>
+   <input class="in" id="minval" inputmode="decimal" style="flex:1" aria-label="Min value">
+   <select class="in" id="minu" style="flex:0 0 80px" aria-label="Min longevity unit"><option value="yrs">yrs</option><option value="month">month</option></select>
   </div>
+ </div>
 </div></div>
 
 <div class="sec"><h2>Sensing R wave</h2><div class="body"><div class="tb s">
   <span class="hd">Vector</span><span class="hd">R wave (mV)</span><span class="hd">No PWOs at (mV)</span><span class="hd c">Current</span>
   <span class="rl">Ring1 to Ring2</span><input class="in" id="s1" inputmode="text" placeholder="4.8-4.9" aria-label="Ring1 to Ring2 mV"><input class="in" id="p1" inputmode="decimal" aria-label="Ring1 to Ring2 no PWOs at mV"><span class="ck"><input type="checkbox" id="c1" aria-label="Ring1 to Ring2 current vector"></span>
-  <div class="vn"><label class="opt"><input type="checkbox" id="vn1">Add note after Ring1 to Ring2</label><input class="in" id="vt1" hidden aria-label="Note for Ring1 to Ring2" placeholder="Type the note"></div>
+  <div class="vn"><label class="opt"><input type="checkbox" id="vn1">Add note</label><input class="in" id="vt1" hidden aria-label="Note for Ring1 to Ring2" placeholder="Note for Ring1 to Ring2"></div>
   <span class="rl">Ring1 to Can</span><input class="in" id="s2" inputmode="text" placeholder="4.8-4.9" aria-label="Ring1 to Can mV"><input class="in" id="p2" inputmode="decimal" aria-label="Ring1 to Can no PWOs at mV"><span class="ck"><input type="checkbox" id="c2" aria-label="Ring1 to Can current vector"></span>
-  <div class="vn"><label class="opt"><input type="checkbox" id="vn2">Add note after Ring1 to Can</label><input class="in" id="vt2" hidden aria-label="Note for Ring1 to Can" placeholder="Type the note"></div>
+  <div class="vn"><label class="opt"><input type="checkbox" id="vn2">Add note</label><input class="in" id="vt2" hidden aria-label="Note for Ring1 to Can" placeholder="Note for Ring1 to Can"></div>
   <span class="rl">Ring2 to Can</span><input class="in" id="s3" inputmode="text" placeholder="4.8-4.9" aria-label="Ring2 to Can mV"><input class="in" id="p3" inputmode="decimal" aria-label="Ring2 to Can no PWOs at mV"><span class="ck"><input type="checkbox" id="c3" aria-label="Ring2 to Can current vector"></span>
-  <div class="vn"><label class="opt"><input type="checkbox" id="vn3">Add note after Ring2 to Can</label><input class="in" id="vt3" hidden aria-label="Note for Ring2 to Can" placeholder="Type the note"></div>
+  <div class="vn"><label class="opt"><input type="checkbox" id="vn3">Add note</label><input class="in" id="vt3" hidden aria-label="Note for Ring2 to Can" placeholder="Note for Ring2 to Can"></div>
 </div>
+<div class="qk" style="margin-top:8px"><button type="button" class="ghost" id="pwoall">Use same "No PWOs at" for all vectors</button></div></div></div>
+
+<div class="sec"><h2>Impedance (Ω)</h2><div class="body"><div class="grid">
+  <label class="f c2"><span>Ring1 to Ring2</span><input class="in" id="i1" inputmode="decimal" aria-label="Ring1 to Ring2 impedance"></label>
+  <label class="f c2"><span>Ring1 to Coil2</span><input class="in" id="i2" inputmode="decimal" aria-label="Ring1 to Coil2 impedance"></label>
+  <label class="f c2"><span>High Voltage</span><input class="in" id="i3" inputmode="decimal" aria-label="High voltage impedance"></label>
+</div></div></div>
+
+<div class="sec"><h2>Threshold</h2><div class="body">
+  <div class="line"><input class="in" id="t1v" inputmode="decimal" placeholder="V" aria-label="Threshold volts"><span class="u">V @</span><input class="in" id="t1m" inputmode="decimal" placeholder="ms" aria-label="Threshold pulse width ms"><span class="u">ms</span></div>
 </div></div>
-
-<div class="sec"><h2>Impedance (Ω)</h2><div class="body"><div class="tb i">
-  <span class="rl">Ring1 to Ring2</span><input class="in" id="i1" inputmode="decimal" aria-label="Ring1 to Ring2 impedance">
-  <span class="rl">Ring1 to Coil2</span><input class="in" id="i2" inputmode="decimal" aria-label="Ring1 to Coil2 impedance">
-  <span class="rl">High Voltage</span><input class="in" id="i3" inputmode="decimal" aria-label="High voltage impedance">
-</div></div></div>
-
-<div class="sec"><h2>Threshold</h2><div class="body"><div class="tb th">
-  <span class="hd">Volt (V)</span><span class="hd">Pulse width (ms)</span>
-  <input class="in" id="t1v" inputmode="decimal" aria-label="Threshold volts"><input class="in" id="t1m" inputmode="decimal" aria-label="Threshold pulse width ms">
-</div></div></div>
 
 <div class="sec"><h2>Wavelet</h2><div class="body">
   <div class="dzc" style="margin-top:0">
     <label class="dzen"><input type="checkbox" id="wven" aria-label="Enable Wavelet">Wavelet</label>
-    <div class="dzbody" id="wvbody" hidden>
-      <label class="f" style="margin-bottom:10px"><span>Wavelet vector(EGM2)</span>
+    <div class="dzbody grid" id="wvbody" hidden>
+      <label class="f" style="grid-column:span 4"><span>Wavelet vector(EGM2)</span>
         <select class="in" id="wvvec" aria-label="Wavelet vector"><option selected>Coil2 to Can</option><option>Ring1 to Ring2</option><option>Ring1 to Coil1</option><option>Ring1 to Coil2</option><option>Coil1 to Can</option><option>Ring1 to Can</option><option>Ring2 to Can</option><option>Coil2 to Coil1</option></select>
       </label>
-      <label class="f"><span>% Matching</span><input class="in" id="wvpct" inputmode="decimal" aria-label="Wavelet percent matching"></label>
+      <label class="f c2"><span>% Matching</span><input class="in" id="wvpct" inputmode="decimal" aria-label="Wavelet percent matching"></label>
     </div>
   </div>
 </div></div>
 
-<div class="sec"><h2>Setting</h2><div class="body">
-  <div class="tb th" style="margin-bottom:8px"><span class="hd">Output V @ ms</span></div>
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-    <input class="in" id="ov" inputmode="decimal" placeholder="V" style="flex:1;min-width:0" aria-label="Output volts">
-    <span class="hd" style="flex:0 0 auto">V @</span>
-    <input class="in" id="om" inputmode="decimal" placeholder="ms" style="flex:1;min-width:0" aria-label="Output pulse width ms">
-    <span class="hd" style="flex:0 0 auto">ms</span>
+<div class="sec"><h2>Setting</h2><div class="body"><div class="grid">
+  <div class="f" style="grid-column:span 4"><span>Output (V @ ms)</span>
+   <div class="line"><input class="in" id="ov" inputmode="decimal" placeholder="V" aria-label="Output volts"><span class="u">V @</span><input class="in" id="om" inputmode="decimal" placeholder="ms" aria-label="Output pulse width ms"><span class="u">ms</span></div>
   </div>
-  <label class="f"><span>Sensitivity (mV)</span><input class="in" id="sens" inputmode="decimal" aria-label="Sensitivity mV"></label>
-  <div class="f" style="margin-top:14px"><span>Detection zone</span></div>
+  <label class="f c2"><span>Sensitivity (mV)</span><input class="in" id="sens" inputmode="decimal" aria-label="Sensitivity mV"></label>
+</div></div></div>
+
+<div class="sec"><h2>Detection zone</h2><div class="body" style="padding-top:2px">
   <div id="dzwrap"></div>
 </div></div>
 
@@ -375,7 +405,28 @@ $("copy").onclick=async()=>{const t=summary();
   catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();
     try{document.execCommand("copy");say("Copied")}catch(_){say("Copy failed")}a.remove()}};
 $("clear").onclick=()=>{document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
-  document.querySelectorAll("input[type=checkbox]").forEach(e=>e.checked=false);$("date").value=today();sync();redraw();say("Cleared")};
+  document.querySelectorAll("input[type=checkbox]").forEach(e=>{e.checked=false;e.dispatchEvent(new Event("change",{bubbles:true}))});$("pm").value="OVO";$("date").value=today();sync();redraw();say("Cleared")};
+/* ---- V02 easier input: segmented buttons instead of dropdowns ---- */
+function segify(sel,labels){
+  if(!sel||sel.dataset.seg)return;sel.dataset.seg="1";sel.hidden=true;
+  const g=document.createElement("div");g.className="seg";g.setAttribute("role","group");
+  const opts=[...sel.options].filter(o=>o.value!=="");
+  opts.forEach(o=>{const b=document.createElement("button");b.type="button";b.textContent=(labels&&labels[o.value])||o.text;b.dataset.v=o.value;
+    b.onclick=()=>{const blank=[...sel.options].some(x=>x.value==="");sel.value=(sel.value===o.value&&blank)?"":o.value;
+      sel.dispatchEvent(new Event("input",{bubbles:true}));sel.dispatchEvent(new Event("change",{bubbles:true}))};g.appendChild(b)});
+  const paint=()=>[...g.children].forEach(b=>b.classList.toggle("on",b.dataset.v===sel.value));
+  sel.addEventListener("change",paint);paint();sel.after(g);
+}
+DZ.forEach(([k])=>{segify($("dz"+k+"m"));for(let i=1;i<=6;i++)segify(document.getElementById("dz"+k+"s"+i),{J:"J",B:"Burst",R:"Ramp"});
+  const fill=document.getElementById("dz"+k+"fill");
+  if(fill){const q=document.createElement("div");q.className="qk";
+    const b=document.createElement("button");b.type="button";b.className="ghost";b.textContent="40J × 6";
+    b.onclick=()=>{for(let i=1;i<=6;i++){const s=$("dz"+k+"s"+i);s.value="J";$("dz"+k+"v"+i).value="40";s.dispatchEvent(new Event("change",{bubbles:true}))}redraw()};
+    fill.before(q);q.appendChild(b);q.appendChild(fill);}
+  document.getElementById("dz"+k+"fill")&&document.getElementById("dz"+k+"fill").addEventListener("click",()=>{for(let i=2;i<=6;i++)$("dz"+k+"s"+i).dispatchEvent(new Event("change",{bubbles:true}))});
+});
+segify($("yru"));segify($("minu"));
+$("pwoall").onclick=()=>{const x=v("p1");if(!x){say("Fill Ring1 to Ring2 first");return}$("p2").value=x;$("p3").value=x;redraw()};
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 </body>
