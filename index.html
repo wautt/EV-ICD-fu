@@ -725,7 +725,10 @@ $("cfm").addEventListener("click",e=>{if(e.target===$("cfm"))closeCfm()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("cfm").hidden)closeCfm()});
 if(loadDraft()){sync();redrawNow();say("Restored your last entries")}
 if(store.get("evicd_news_seen")!==NEWS_ID){$("newsBtn").classList.add("dot");openNews()}
-window.addEventListener("load",()=>{try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){/* blocked in previews and sandboxed frames */}});
+window.addEventListener("load",()=>{try{if(!("serviceWorker" in navigator))return;const sw=navigator.serviceWorker,had=!!sw.controller;
+  /* when a new version takes over, reload once so the shortcut shows it straight away (draft is kept) */
+  sw.addEventListener("controllerchange",()=>{if(had&&!sessionStorage.getItem("evicd_swr")){try{sessionStorage.setItem("evicd_swr","1")}catch(_){}location.reload()}});
+  sw.register("sw.js",{updateViaCache:"none"}).then(r=>r.update&&r.update()).catch(()=>{})}catch(e){/* blocked in previews and sandboxed frames */}});
 </script>
 </body>
 </html>
