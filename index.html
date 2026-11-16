@@ -6,7 +6,7 @@
 <title>EV-ICD F/U V05</title>
 <script>try{if(window.self!==window.top)document.documentElement.classList.add("inapp")}catch(e){document.documentElement.classList.add("inapp")}</script>
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+:root{box-sizing:border-box;
 --bg:#e8eef8;--paper:#fff;--ink:#0f1f4d;--pen:#1a3aa0;--line:#c9d5ec;--mute:#5a6b8c;--acc:#1e3a96;--accfg:#fff;--fill:#f2f6fd;--head:#1e3a96;--headfg:#fff}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#2a4bb8;--headfg:#fff}}
 :root[data-theme="dark"]{--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#2a4bb8;--headfg:#fff}
@@ -100,6 +100,8 @@ input,select,textarea{font-size:16px!important}
 .hint{margin:0 4px 6px;font-size:12px;color:var(--mute)}
 /* one-screen layout: report scales to fit, page never scrolls */
 html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+html{background:var(--bg)}
+/* header runs up under the status bar; the bottom bar keeps clear of the home bar */
 body{display:flex;flex-direction:column;height:100%}
 /* inside the Claude app: the app already handles the notch and home bar */
 html.inapp{padding:0!important}
@@ -723,7 +725,7 @@ $("cfm").addEventListener("click",e=>{if(e.target===$("cfm"))closeCfm()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("cfm").hidden)closeCfm()});
 if(loadDraft()){sync();redrawNow();say("Restored your last entries")}
 if(store.get("evicd_news_seen")!==NEWS_ID){$("newsBtn").classList.add("dot");openNews()}
-if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+window.addEventListener("load",()=>{try{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){/* blocked in previews and sandboxed frames */}});
 </script>
 </body>
 </html>
