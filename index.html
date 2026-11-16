@@ -3,14 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>EV-ICD Follow-up Form V02</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="theme-color" content="#1e3a96">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<title>EV-ICD F/U V05</title>
+<script>try{if(window.self!==window.top)document.documentElement.classList.add("inapp")}catch(e){document.documentElement.classList.add("inapp")}</script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#e8eef8;--paper:#fff;--ink:#0f1f4d;--pen:#1a3aa0;--line:#c9d5ec;--mute:#5a6b8c;--acc:#1e3a96;--accfg:#fff;--fill:#f2f6fd;--head:#1e3a96;--headfg:#fff}
@@ -18,7 +12,7 @@
 :root[data-theme="dark"]{--bg:#12151c;--paper:#1b202b;--ink:#e8ebf2;--pen:#a9bbff;--line:#3a4256;--mute:#98a0b3;--acc:#8fa8ff;--accfg:#12151c;--fill:#232938;--head:#2a4bb8;--headfg:#fff}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.3 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.3 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
 main{max-width:680px;margin:0 auto;padding:10px 10px 0}
 .credit{margin:0 4px 6px;font-size:11px;color:var(--mute)}
 .sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden}
@@ -99,13 +93,162 @@ input,select,textarea{font-size:16px!important}
 .qk{display:flex;flex-wrap:wrap;gap:6px;grid-column:1/-1}
 .qk button{font-size:12px;min-height:32px;padding:5px 10px}
 .minrow .seg,.line .seg{flex:0 0 auto}
+/* V05: tap-the-report editing */
+#forms{display:none}
+.paper{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(15,31,77,.08)}
+#cv{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.hint{margin:0 4px 6px;font-size:12px;color:var(--mute)}
+/* one-screen layout: report scales to fit, page never scrolls */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{display:flex;flex-direction:column;height:100%}
+/* inside the Claude app: the app already handles the notch and home bar */
+html.inapp{padding:0!important}
+html.inapp .topbar{padding-top:12px}
+html.inapp .bar{padding-bottom:max(14px,calc(6px + env(safe-area-inset-bottom,0px)))}
+main{flex:1 1 auto;min-height:0;width:100%;display:flex;flex-direction:column;padding-bottom:8px}
+main>.paper{flex:1 1 auto;min-height:0;display:flex;align-items:flex-start;justify-content:center;background:transparent;border:0;box-shadow:none;overflow:hidden}
+main>.paper #cv{width:auto;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(15,31,77,.08)}
+.bar{position:static;flex:0 0 auto}
+main>div[style*="height:10px"]{display:none}
+.bar{margin:0}
+#scrim{position:fixed;inset:0;background:rgba(15,31,77,.18);z-index:20}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-width:680px;margin:0 auto;background:var(--paper);border-radius:14px 14px 0 0;box-shadow:0 -6px 24px rgba(15,31,77,.22);display:flex;flex-direction:column;max-height:60vh;padding-bottom:env(safe-area-inset-bottom,0px)}
+#sheet .sh{display:flex;align-items:center;gap:8px;padding:8px 12px 6px;border-bottom:1px solid var(--line)}
+#sheet .sh b{flex:1;font-size:15px}
+#sheet .sh button{min-height:32px;padding:4px 16px}
+#sheet .sh #sheetClear{padding:5px 12px}
+#sheet{will-change:transform}
+html{touch-action:manipulation}
+#sheet.kbtop{animation:none!important}
+#sheetBody{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#sheetBody .sec{border:0;border-radius:0;margin:0}
+#sheetBody .grid>*{grid-column:1/-1!important}
+#sheetBody .grid.imp>*{grid-column:span 2!important}
+#sheetBody .body{padding:8px 12px 10px}
+#sheetBody .tb.s{grid-template-columns:minmax(56px,auto) 1fr 1fr 40px;gap:6px}
+#sheetBody .tb.s .rl{font-size:12px}
+#sheetBody .tb.s .hd{white-space:nowrap}
+#sheetBody .vn{grid-column:auto;margin:0;justify-content:center}
+#sheetBody .vn .opt{font-size:0;gap:0;min-height:34px}
+#sheetBody .vn:has(input:checked){grid-column:1/-1;justify-content:flex-start}
+#sheetBody .vn:has(input:checked) .opt{font-size:11px;gap:5px}
+#sheetBody .qk{margin-top:6px!important}
+.dztabs{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--fill);position:sticky;top:0;z-index:1}
+.dztabs button{flex:1 1 0;background:transparent;color:var(--mute);border:0;border-left:1px solid var(--line);border-radius:0;min-height:36px;padding:4px 2px;font-size:13px;font-weight:600;position:relative}
+.dztabs button:first-child{border-left:0}
+.dztabs button.used{color:var(--ink)}
+.dztabs button i{display:none;position:absolute;top:5px;right:7px;width:6px;height:6px;border-radius:50%;background:var(--acc)}
+.dztabs button.used i{display:block}
+.dztabs button.on{background:var(--acc);color:var(--accfg)}
+.dztabs button.on i{background:var(--accfg)}
+#sheetBody #dzwrap[data-tab] .dzc{display:none;border:0;padding:0;margin-top:10px}
+#sheetBody #dzwrap[data-tab] .dzc.act{display:block}
+#sheetBody>.body>.dzc:first-child{margin-top:0}
+#sheet.kbtop{top:12vh;bottom:auto!important;max-height:39vh!important;left:8px;right:8px;border-radius:14px;box-shadow:0 8px 28px rgba(15,31,77,.28)}
+#sheet.kbtop #sheetBody{padding-bottom:6px}
+@media (prefers-reduced-motion:no-preference){#sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}}
+/* modern header */
+.topbar{position:relative;margin:-10px -10px 12px;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 16px;
+ background:linear-gradient(135deg,#17307f 0%,#1e3a96 45%,#3a63d6 100%);color:#fff;border-radius:0 0 20px 20px;
+ box-shadow:0 6px 18px rgba(23,48,127,.22);overflow:hidden}
+.topbar::after{content:"";position:absolute;right:-40px;top:-60px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
+.tb-in{position:relative;display:flex;align-items:center;gap:12px;max-width:660px;margin:0 auto}
+.tb-ic{flex:0 0 42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}
+.tb-tx{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}
+@media (max-width:380px){.topbar .tb-tx b{font-size:17px;gap:6px}.tb-in{gap:10px}.tb-ic{flex-basis:38px;height:38px}}
+.topbar .tb-tx b{display:flex;align-items:center;gap:8px;font-size:19px;font-weight:700;letter-spacing:.2px;line-height:1.2}
+.topbar .ver{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.4px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);margin:0;opacity:1}
+.topbar .cr{display:block;font-size:11.5px;opacity:.82}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .topbar{background:linear-gradient(135deg,#142a6e 0%,#1f3c9c 55%,#3355bf 100%);box-shadow:none}}
+/* clear confirm */
+#cfm{position:fixed;inset:0;z-index:31;background:rgba(15,31,77,.35);display:flex;align-items:center;justify-content:center;padding:24px}
+.cf{background:var(--paper);color:var(--ink);border-radius:16px;max-width:320px;width:100%;padding:18px 16px 14px;box-shadow:0 12px 40px rgba(15,31,77,.3);text-align:center}
+.cf b{display:block;font-size:17px;margin-bottom:6px}
+.cf p{margin:0 0 14px;font-size:13px;color:var(--mute);line-height:1.4}
+.cf-a{display:flex;gap:8px}.cf-a button{flex:1;min-height:40px;font-size:14px}
+#cfmYes{background:#c62f2f;border-color:#c62f2f;color:#fff}
+/* what's new */
+.tb-new{margin-left:auto;flex:0 0 auto;position:relative;white-space:nowrap;letter-spacing:.1px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;min-height:28px;padding:3px 9px;font-size:10.5px;font-weight:600}
+.tb-new i{position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:#ff8a3d;border:2px solid #1e3a96;display:none}
+.tb-new.dot i{display:block}
+#news{position:fixed;inset:0;z-index:30;background:rgba(15,31,77,.35);display:flex;align-items:center;justify-content:center;padding:16px}
+.nw{background:var(--paper);color:var(--ink);border-radius:16px;max-width:440px;width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(15,31,77,.3);overflow:hidden}
+.nw-h{display:flex;align-items:flex-start;gap:8px;padding:14px 14px 10px;border-bottom:1px solid var(--line)}
+.nw-h>div{flex:1}
+.nw-h .nw-bg{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#ff8a3d,#e8562a);padding:3px 9px;border-radius:999px;margin-bottom:6px}
+.nw-h b{font-size:18px!important;line-height:1.25}.nw-h b{display:block;font-size:16px}.nw-h span{font-size:11px;color:var(--mute)}
+.nw-h button{min-height:30px;padding:2px 10px}
+.nw-b{overflow-y:auto;padding:10px 14px;-webkit-overflow-scrolling:touch}
+.nw-c{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.nw-c b{font-size:13px}.nw-c p{margin:2px 0 0;font-size:12px;color:var(--mute);line-height:1.35}
+.nw-c:last-child{border-bottom:0}
+.nw-f{font-size:12px;color:var(--mute);margin:10px 0 2px}
+.nw-a{padding:10px 14px 14px}.nw-a button{width:100%;min-height:40px;font-size:14px}
+.dm{flex:0 0 96px;height:72px;border-radius:10px;background:var(--fill);border:1px solid var(--line);position:relative;overflow:hidden}
+.dm *{box-sizing:border-box}
+.dmA .rp{position:absolute;inset:6px 10px;display:flex;flex-direction:column;gap:5px}
+.dmA .rp i{display:block;height:5px;border-radius:3px;background:var(--line)}
+.dmA .rp i.hl{background:var(--acc);opacity:.35}
+.dmA .fg{position:absolute;width:14px;height:14px;border-radius:50%;background:rgba(30,58,150,.35);border:2px solid var(--acc);left:52px;top:18px;animation:tap 4s infinite}
+.dmA .sh{position:absolute;left:4px;right:4px;bottom:0;height:34px;background:var(--paper);border-radius:8px 8px 0 0;box-shadow:0 -2px 8px rgba(15,31,77,.18);padding:4px 6px;transform:translateY(110%);animation:sheet 4s infinite}
+.dmA u{display:block;text-decoration:none;font-size:9px;color:var(--mute)}
+.dmA s{display:block;text-decoration:none;height:14px;border:1px solid var(--acc);border-radius:4px;font-size:9px;line-height:12px;padding-left:4px;overflow:hidden;white-space:nowrap}
+.dmA em{font-style:normal;color:var(--pen);display:inline-block;width:0;overflow:hidden;vertical-align:top;animation:type 4s steps(4) infinite}
+@keyframes tap{0%,8%{opacity:0;transform:scale(1.6)}14%{opacity:1;transform:scale(1)}26%{opacity:1;transform:scale(.8)}34%,100%{opacity:0}}
+@keyframes sheet{0%,28%{transform:translateY(110%)}38%,88%{transform:none}96%,100%{transform:translateY(110%)}}
+@keyframes type{0%,42%{width:0}62%,100%{width:22px}}
+.dmB .tabs{position:absolute;left:6px;right:6px;top:8px;height:18px;display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--paper)}
+.dmB .tabs span{flex:1;font-size:8px;font-weight:700;text-align:center;line-height:16px;position:relative;z-index:1;color:var(--ink);animation:tabtx 6s infinite}
+.dmB .tabs em{position:absolute;bottom:0;height:3px;left:0;width:25%;background:var(--acc);border-radius:2px;animation:tabmv 6s infinite}
+@keyframes tabmv{0%,20%{left:0}25%,45%{left:25%}50%,70%{left:50%}75%,95%{left:75%}100%{left:0}}
+.dmB .rows{position:absolute;left:8px;right:8px;top:34px;display:flex;flex-direction:column;gap:6px}
+.dmB .rows i{display:block;height:6px;border-radius:3px;background:var(--line);animation:rows 1.5s infinite}
+@keyframes rows{0%{opacity:.3}10%,100%{opacity:1}}
+.dmB .tabs span:nth-child(1){animation-delay:0s}
+@keyframes ck{0%{opacity:0}6%,30%{opacity:1}34%,100%{opacity:0}}
+.dmD .ib{position:absolute;left:10px;right:10px;top:12px;height:20px;border:1px solid var(--line);background:var(--paper);border-radius:5px;font-size:10px;line-height:18px;padding-left:6px}
+.dmD .ib em{font-style:normal;color:var(--pen);animation:clr 3.5s infinite}
+.dmD .btn{position:absolute;left:24px;right:24px;bottom:10px;height:20px;border:1px solid var(--acc);color:var(--acc);border-radius:5px;font-size:9px;font-weight:700;text-align:center;line-height:18px;animation:press 3.5s infinite}
+@keyframes clr{0%,45%{opacity:1}55%,85%{opacity:0}95%,100%{opacity:1}}
+@keyframes press{0%,38%{transform:none;background:transparent}44%{transform:scale(.92);background:rgba(30,58,150,.15)}52%,100%{transform:none;background:transparent}}
+.dmE{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;align-content:center}
+.dmE .dot{width:10px;height:10px;border-radius:50%;background:var(--acc);animation:sv 1.8s infinite}
+.dmE .dot:nth-child(2){animation-delay:.2s}.dmE .dot:nth-child(3){animation-delay:.4s}
+.dmE span{flex-basis:100%;text-align:center;font-size:10px;color:var(--mute);font-weight:600}
+@keyframes sv{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-6px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.dm *,.dm *::after{animation:none!important}.dmA .sh{transform:none}.dmA em{width:22px}}
 </style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3a96">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EV-ICD F/U">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 </head>
 <body>
 <main>
-<header class="topbar"><b>EV-ICD F/U</b><span class="ver">V02</span><span>Developed by Autthapol K.</span></header>
+<header class="topbar"><div class="tb-in">
+ <span class="tb-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+<path d="M11.2 6.3H20.8C21.5 6.3 22 6.8 22 7.5V14.2C22 17.1 19.8 19.4 16.9 19.4C13.1 19.4 10 16 10 11.8V7.5C10 6.8 10.5 6.3 11.2 6.3Z" fill="rgba(255,255,255,.22)" stroke-width="1.2"/>
+<path d="M14.6 6.3V4.1C14.6 3.6 15 3.2 15.5 3.2H20.3C20.8 3.2 21.2 3.6 21.2 4.1V6.3" fill="rgba(255,255,255,.12)" stroke-width="1"/>
+<path d="M16.2 3.7v2.1M17.5 3.7v2.1M18.8 3.7v2.1" stroke-width=".6" opacity=".85"/>
+<text x="16" y="12.9" text-anchor="middle" fill="currentColor" stroke="none" font-size="3" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif" letter-spacing="-.05">EV-ICD</text>
+<path d="M15.2 19.2V20.4C15.2 21 14.8 21.4 14.2 21.4H5.4C4.4 21.4 3.6 20.6 3.6 19.6V14.2" stroke="#c3cad8" stroke-width="1.2"/>
+<path d="M3.60 14.20 L3.27 14.01 L2.95 13.81 L2.66 13.62 L2.40 13.42 L2.19 13.23 L2.03 13.04 L1.93 12.84 L1.90 12.65 L1.93 12.46 L2.03 12.26 L2.19 12.07 L2.40 11.88 L2.66 11.68 L2.95 11.49 L3.27 11.29 L3.60 11.10 L3.93 10.91 L4.25 10.71 L4.54 10.52 L4.80 10.32 L5.01 10.13 L5.17 9.94 L5.27 9.74 L5.30 9.55 L5.27 9.36 L5.17 9.16 L5.01 8.97 L4.80 8.77 L4.54 8.58 L4.25 8.39 L3.93 8.19 L3.60 8.00 L3.27 7.81 L2.95 7.61 L2.66 7.42 L2.40 7.22 L2.19 7.03 L2.03 6.84 L1.93 6.64 L1.90 6.45 L1.93 6.26 L2.03 6.06 L2.19 5.87 L2.40 5.67 L2.66 5.48 L2.95 5.29 L3.27 5.09 L3.60 4.90 L3.93 4.71 L4.25 4.51 L4.54 4.32 L4.80 4.12 L5.01 3.93 L5.17 3.74 L5.27 3.54 L5.30 3.35 L5.27 3.16 L5.17 2.96 L5.01 2.77 L4.80 2.57 L4.54 2.38 L4.25 2.19 L3.93 1.99 L3.60 1.80" stroke="#c3cad8" stroke-width="1.2"/><path d="M2.03 13.04 L1.93 12.84 L1.90 12.65 L1.93 12.46 L2.03 12.26 L2.19 12.07 L2.40 11.88 L2.66 11.68 L2.95 11.49 L3.27 11.29 L3.60 11.10 L3.93 10.91 L4.25 10.71 L4.54 10.52 L4.80 10.32 L5.01 10.13 L5.17 9.94 L5.27 9.74 L5.30 9.55 L5.27 9.36 L5.17 9.16 L5.01 8.97" stroke="#8e98ad" stroke-width="1.9"/><path d="M2.03 13.04 L1.93 12.84 L1.90 12.65 L1.93 12.46 L2.03 12.26 L2.19 12.07 L2.40 11.88 L2.66 11.68 L2.95 11.49 L3.27 11.29 L3.60 11.10 L3.93 10.91 L4.25 10.71 L4.54 10.52 L4.80 10.32 L5.01 10.13 L5.17 9.94 L5.27 9.74 L5.30 9.55 L5.27 9.36 L5.17 9.16 L5.01 8.97" stroke="#e4e8f0" stroke-width=".55" opacity=".9"/><path d="M2.03 6.84 L1.93 6.64 L1.90 6.45 L1.93 6.26 L2.03 6.06 L2.19 5.87 L2.40 5.67 L2.66 5.48 L2.95 5.29 L3.27 5.09 L3.60 4.90 L3.93 4.71 L4.25 4.51 L4.54 4.32 L4.80 4.12 L5.01 3.93 L5.17 3.74 L5.27 3.54 L5.30 3.35 L5.27 3.16 L5.17 2.96 L5.01 2.77" stroke="#8e98ad" stroke-width="1.9"/><path d="M2.03 6.84 L1.93 6.64 L1.90 6.45 L1.93 6.26 L2.03 6.06 L2.19 5.87 L2.40 5.67 L2.66 5.48 L2.95 5.29 L3.27 5.09 L3.60 4.90 L3.93 4.71 L4.25 4.51 L4.54 4.32 L4.80 4.12 L5.01 3.93 L5.17 3.74 L5.27 3.54 L5.30 3.35 L5.27 3.16 L5.17 2.96 L5.01 2.77" stroke="#e4e8f0" stroke-width=".55" opacity=".9"/>
+<path d="M2.45 14.2h2.3M2.45 8.00h2.3" stroke="#0b0b0b" stroke-width="1" stroke-linecap="butt"/>
+<circle cx="3.6" cy="1.80" r=".8" fill="#c3cad8" stroke="none"/>
+<path d="M9.6 21.4h2.4" stroke-width="1.9" opacity=".55"/>
+</svg></span>
+ <span class="tb-tx"><b>EV-ICD F/U <span class="ver">V05</span></b><span class="cr">Developed by Autthapol K.</span></span>
+ <button type="button" class="tb-new" id="newsBtn" aria-label="What's new">What's new<i aria-hidden="true"></i></button>
+</div></header>
 
-<div class="sec"><h2>Device</h2><div class="body">
+<div class="paper"><canvas id="cv" width="1170" height="1500" aria-label="Report. Tap a field to edit it."></canvas></div>
+<div id="forms">
+<div class="sec" id="secDevice"><h2>Device</h2><div class="body">
  <div class="grid">
   <label class="f c3"><span>Model</span><input class="in" id="model" value="DVEA3E4" readonly></label>
   <label class="f c3"><span>Follow up date</span><input class="in" type="date" id="date"></label>
@@ -136,7 +279,7 @@ input,select,textarea{font-size:16px!important}
  </div>
 </div></div>
 
-<div class="sec"><h2>Sensing R wave</h2><div class="body"><div class="tb s">
+<div class="sec" id="secSense"><h2>Sensing R wave</h2><div class="body"><div class="tb s">
   <span class="hd">Vector</span><span class="hd">R wave (mV)</span><span class="hd">No PWOs at (mV)</span><span class="hd c">Current</span>
   <span class="rl">Ring1 to Ring2</span><input class="in" id="s1" inputmode="text" placeholder="4.8-4.9" aria-label="Ring1 to Ring2 mV"><input class="in" id="p1" inputmode="decimal" aria-label="Ring1 to Ring2 no PWOs at mV"><span class="ck"><input type="checkbox" id="c1" aria-label="Ring1 to Ring2 current vector"></span>
   <div class="vn"><label class="opt"><input type="checkbox" id="vn1">Add note</label><input class="in" id="vt1" hidden aria-label="Note for Ring1 to Ring2" placeholder="Note for Ring1 to Ring2"></div>
@@ -144,49 +287,70 @@ input,select,textarea{font-size:16px!important}
   <div class="vn"><label class="opt"><input type="checkbox" id="vn2">Add note</label><input class="in" id="vt2" hidden aria-label="Note for Ring1 to Can" placeholder="Note for Ring1 to Can"></div>
   <span class="rl">Ring2 to Can</span><input class="in" id="s3" inputmode="text" placeholder="4.8-4.9" aria-label="Ring2 to Can mV"><input class="in" id="p3" inputmode="decimal" aria-label="Ring2 to Can no PWOs at mV"><span class="ck"><input type="checkbox" id="c3" aria-label="Ring2 to Can current vector"></span>
   <div class="vn"><label class="opt"><input type="checkbox" id="vn3">Add note</label><input class="in" id="vt3" hidden aria-label="Note for Ring2 to Can" placeholder="Note for Ring2 to Can"></div>
-</div>
-<div class="qk" style="margin-top:8px"><button type="button" class="ghost" id="pwoall">Use same "No PWOs at" for all vectors</button></div></div></div>
+</div></div></div>
 
-<div class="sec"><h2>Impedance (Ω)</h2><div class="body"><div class="grid">
+<div class="sec" id="secImp"><h2>Impedance (Ω)</h2><div class="body"><div class="grid">
   <label class="f c2"><span>Ring1 to Ring2</span><input class="in" id="i1" inputmode="decimal" aria-label="Ring1 to Ring2 impedance"></label>
   <label class="f c2"><span>Ring1 to Coil2</span><input class="in" id="i2" inputmode="decimal" aria-label="Ring1 to Coil2 impedance"></label>
   <label class="f c2"><span>High Voltage</span><input class="in" id="i3" inputmode="decimal" aria-label="High voltage impedance"></label>
 </div></div></div>
 
-<div class="sec"><h2>Threshold</h2><div class="body">
+<div class="sec" id="secThr"><h2>Threshold</h2><div class="body">
   <div class="line"><input class="in" id="t1v" inputmode="decimal" placeholder="V" aria-label="Threshold volts"><span class="u">V @</span><input class="in" id="t1m" inputmode="decimal" placeholder="ms" aria-label="Threshold pulse width ms"><span class="u">ms</span></div>
 </div></div>
 
-<div class="sec"><h2>Wavelet</h2><div class="body">
+<div class="sec" id="secWv"><h2>Wavelet</h2><div class="body">
   <div class="dzc" style="margin-top:0">
-    <label class="dzen"><input type="checkbox" id="wven" aria-label="Enable Wavelet">Wavelet</label>
-    <div class="dzbody grid" id="wvbody" hidden>
+    <label class="dzen"><input type="checkbox" id="wven" checked aria-label="Enable Wavelet">Wavelet</label>
+    <div class="dzbody grid" id="wvbody">
       <label class="f" style="grid-column:span 4"><span>Wavelet vector(EGM2)</span>
         <select class="in" id="wvvec" aria-label="Wavelet vector"><option selected>Coil2 to Can</option><option>Ring1 to Ring2</option><option>Ring1 to Coil1</option><option>Ring1 to Coil2</option><option>Coil1 to Can</option><option>Ring1 to Can</option><option>Ring2 to Can</option><option>Coil2 to Coil1</option></select>
       </label>
-      <label class="f c2"><span>% Matching</span><input class="in" id="wvpct" inputmode="decimal" aria-label="Wavelet percent matching"></label>
+      <label class="f c2"><span>% Matching</span><input class="in" id="wvpct" inputmode="text" aria-label="Wavelet percent matching"></label>
     </div>
   </div>
 </div></div>
 
-<div class="sec"><h2>Setting</h2><div class="body"><div class="grid">
+<div class="sec" id="secSet"><h2>Setting</h2><div class="body"><div class="grid">
   <div class="f" style="grid-column:span 4"><span>Output (V @ ms)</span>
    <div class="line"><input class="in" id="ov" inputmode="decimal" placeholder="V" aria-label="Output volts"><span class="u">V @</span><input class="in" id="om" inputmode="decimal" placeholder="ms" aria-label="Output pulse width ms"><span class="u">ms</span></div>
   </div>
   <label class="f c2"><span>Sensitivity (mV)</span><input class="in" id="sens" inputmode="decimal" aria-label="Sensitivity mV"></label>
 </div></div></div>
 
-<div class="sec"><h2>Detection zone</h2><div class="body" style="padding-top:2px">
+<div class="sec" id="secDz"><h2>Detection zone</h2><div class="body" style="padding-top:2px">
   <div id="dzwrap"></div>
 </div></div>
 
-<div class="sec"><h2>Note</h2><div class="body">
+<div class="sec" id="secNote"><h2>Note</h2><div class="body">
   <textarea id="note" aria-label="Note" placeholder="Sensing &amp; PWOs, events, plan"></textarea>
   <label class="big"><input type="checkbox" id="noep">No episode</label>
 </div></div>
 
-<div class="sec"><h2>Export preview</h2><div class="pv"><canvas id="cv" width="1170" height="1500" aria-label="Preview of exported form"></canvas></div></div>
+</div>
+<div style="height:10px"></div>
 </main>
+<div id="scrim" hidden></div>
+<div id="cfm" hidden role="alertdialog" aria-modal="true" aria-labelledby="cfmT" aria-describedby="cfmD"><div class="cf">
+ <b id="cfmT">Clear everything?</b>
+ <p id="cfmD">All fields and the saved entries on this device will be emptied. This can't be undone.</p>
+ <div class="cf-a"><button type="button" class="ghost" id="cfmNo">Cancel</button><button type="button" id="cfmYes">Clear</button></div>
+</div></div>
+<div id="news" hidden role="dialog" aria-modal="true" aria-labelledby="newsT"><div class="nw">
+ <div class="nw-h"><div><span class="nw-bg">Major update</span><b id="newsT">V05: a new way to fill in the form</b><span>The report is now the form. Updated 16 Nov 2026</span></div><button type="button" class="ghost" id="newsX" aria-label="Close">✕</button></div>
+ <div class="nw-b">
+  <div class="nw-c"><div class="dm dmA" aria-hidden="true"><div class="rp"><i></i><i></i><i class="hl"></i><i></i><i></i></div><div class="fg"></div><div class="sh"><u>Battery</u><s><em>2.95</em></s></div></div>
+   <div><b>Tap the report to fill it in</b><p>Tap any field on the report and a panel opens with just that item. The report updates as you type.</p></div></div>
+  <div class="nw-c"><div class="dm dmB" aria-hidden="true"><div class="tabs"><span>VF</span><span>FVT</span><span>VT</span><span>VTM</span><em></em></div><div class="rows"><i></i><i></i><i></i></div></div>
+   <div><b>Detection zones in tabs</b><p>Switch between VF, FVT, VT and VTM in one panel. A dot marks zones in use, and each Rate box shows a typical range.</p></div></div>
+  <div class="nw-c"><div class="dm dmD" aria-hidden="true"><div class="ib"><em>4.8-4.9</em></div><div class="btn">Clear</div></div>
+   <div><b>Clear one panel</b><p>Clear inside a panel empties only that item. Everything else stays.</p></div></div>
+  <div class="nw-c"><div class="dm dmE" aria-hidden="true"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>saved</span></div>
+   <div><b>Your entries are kept</b><p>What you type is saved on this device automatically and comes back when you reopen the link. Tap Clear to start a new case.</p></div></div>
+ </div>
+ <div class="nw-a"><button type="button" id="newsOk">Got it</button></div>
+</div></div>
+<div id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheetT"><div class="sh"><b id="sheetT"></b><button type="button" class="ghost" id="sheetClear">Clear</button><button type="button" id="sheetDone">Done</button></div><div id="sheetBody"></div></div>
 <div class="bar" style="justify-content:center">
   <button id="png">Save PNG</button>
   <button id="pdf">Save PDF</button>
@@ -202,31 +366,36 @@ function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth
 function fd(s){if(!s)return"";const p=s.split("-");return +p[2]+" "+MON[p[1]-1]+" "+p[0]}
 $("date").value=today();
 
+let EDIT=true,HITS=[];
 function render(cv,H){
-  cv.width=W;cv.height=H;const c=cv.getContext("2d");
+  if(cv.width!==W)cv.width=W;if(cv.height!==H)cv.height=H;const c=cv.getContext("2d");HITS=[];
+  const hit=(x1,y1,x2,y2,sec,o={})=>{if(EDIT)HITS.push(Object.assign({x1,y1,x2,y2,sec},o))};
+  const row=(y,x1,x2,sec,o)=>hit(x1,y-50,x2,y+24,sec,o);
   c.fillStyle="#fff";c.fillRect(0,0,W,H);
   const T=(t,x,y,o={})=>{c.font=(o.w||400)+" "+(o.s||34)+"px "+FF;c.fillStyle=o.c||BLUE;c.textAlign=o.a||"left";c.textBaseline="alphabetic";c.fillText(t,x,y)};
   const M=(t,s=34,w=400)=>{c.font=w+" "+s+"px "+FF;return c.measureText(t).width};
   const ln=(x1,x2,y,lw=2)=>{c.strokeStyle=BLUE;c.lineWidth=lw;c.beginPath();c.moveTo(x1,y);c.lineTo(x2,y);c.stroke()};
-  const U=(val,x1,x2,y,s=34)=>{ln(x1,x2,y+12);T(val||"-",(x1+x2)/2,y,{c:INK,w:600,s:s,a:"center"})};
+  const U=(val,x1,x2,y,s=34)=>{if(EDIT){c.fillStyle="#eef3fc";c.fillRect(x1,y-s-2,x2-x1,s+14)}ln(x1,x2,y+12);T(val||"-",(x1+x2)/2,y,{c:INK,w:600,s:s,a:"center"})};
   const F=(lab,val,x1,x2,y,unit)=>{T(lab,x1,y);let e=x2;if(unit){T(unit,x2,y,{a:"right"});e=x2-M(unit)-10}U(val,x1+M(lab)+14,e,y)};
   const box=(x,y,on)=>{c.strokeStyle=BLUE;c.lineWidth=3;c.strokeRect(x,y,30,30);if(on){c.strokeStyle=INK;c.lineWidth=5;c.beginPath();c.moveTo(x+6,y+16);c.lineTo(x+13,y+23);c.lineTo(x+25,y+7);c.stroke()}};
+  const G=(t,x,y,s=28)=>{if(EDIT)T("+ "+t,x,y,{c:"#8d9cc4",w:600,s})};
   const wrap=(t,s=36,mx=1060,w=600)=>{const out=[];let cur="";for(const tok of t.split(/(?<=\s)/)){if(M(cur+tok,s,w)<=mx){cur+=tok;continue}
     if(cur){out.push(cur.trimEnd());cur=""}let part="";for(const ch of tok){if(M(part+ch,s,w)>mx){out.push(part);part=""}part+=ch}cur=part}
     if(cur)out.push(cur.trimEnd());return out};
 
-  T(v("rhythm"),60,66,{c:INK,w:700,s:42});
+  if(v("rhythm"))T(v("rhythm"),60,66,{c:INK,w:700,s:42});else G("Rhythm",60,66,30);hit(40,10,470,96,"secDevice",{f:"rhythm"});
   const top=104;
   T("Medtronic",74,top+100,{s:66,w:700});
-  F("Follow up date",fd($("date").value),484,R,top+88);
+  F("Follow up date",fd($("date").value),484,R,top+88);row(top+88,484,R,"secDevice",{f:"date"});
   let y=top+178;T("EV-ICD F/U",74,y,{s:40,w:700});ln(L,R,y+24);
-  y+=98;F("Model",v("model"),L,570,y);F("DOI",fd($("doi").value),600,R,y);
-  y+=74;F("Mode",v("pm"),L,570,y);if(v("rate"))F("Rate",v("rate"),600,R,y,"bpm");
-  y+=74;F("Battery",v("batt"),L,570,y,"V");
+  y+=98;F("Model",v("model"),L,570,y);F("DOI",fd($("doi").value),600,R,y);row(y,L,585,"secDevice",{f:"pm"});row(y,585,R,"secDevice",{f:"doi"});
+  y+=74;F("Mode",v("pm"),L,570,y);if(v("rate"))F("Rate",v("rate"),600,R,y,"bpm");else G("Rate",600,y);row(y,L,585,"secDevice",{f:"pm"});row(y,585,R,"secDevice",{f:"rate"});
+  y+=74;F("Battery",v("batt"),L,570,y,"V");row(y,L,585,"secDevice",{f:"batt"});row(y,585,R,"secDevice",{f:"yrs"});
   if($("init").checked)F("est.","Initializing",600,R,y);
   else{const lt=($("lt").checked&&v("yrs"))?"<":"",unit=unitWord(v("yrs"),$("yru").value);F("est.",v("yrs")?lt+v("yrs"):"",600,R,y,unit)}
-  if($("minen").checked&&v("minval")){y+=74;const mlt=$("minlt").checked?"<":"";F("min",mlt+v("minval"),600,R,y,unitWord(v("minval"),$("minu").value))}
-  y+=74;F("Charge time(s)",[v("chg"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" "),L,570,y);if(v("vpace"))F("V-pace episode",v("vpace"),600,R,y);
+  if($("minen").checked&&v("minval")){y+=74;const mlt=$("minlt").checked?"<":"";F("min",mlt+v("minval"),600,R,y,unitWord(v("minval"),$("minu").value));row(y,585,R,"secDevice",{f:"minval"})}
+  else if(EDIT){y+=60;G("min",600,y,26);row(y,585,R,"secDevice",{f:"minval",check:"minen"})}
+  y+=74;F("Charge time(s)",[v("chg"),v("chgj")&&("@ "+v("chgj")+" J")].filter(Boolean).join(" "),L,570,y);if(v("vpace"))F("V-pace episode",v("vpace"),600,R,y);else G("V-pace episode",600,y);row(y,L,585,"secDevice",{f:"chg"});row(y,585,R,"secDevice",{f:"vpace"});
 
   y+=94;T("Sensing R wave",L,y,{c:INK,w:700,s:36});
   y+=56;T("R wave (mV)",L,y,{c:INK,w:600,s:28});T("PWOs testing (mV)",510,y,{c:INK,w:600,s:28});
@@ -234,7 +403,8 @@ function render(cv,H){
     y+=68;T(r[0],L,y,{s:30});U(v(r[1]),295,455,y,30);T("mV",463,y,{s:30});
     T("no PWOs at",525,y,{s:30});U(v(r[2]),695,800,y,30);T("mV",808,y,{s:30});
     box(868,y-26,$(r[3]).checked);T("current vector",908,y,{s:26});
-    const k=r[3].slice(1);if($("vn"+k).checked&&v("vt"+k))wrap("Note: "+v("vt"+k),28,950,500).forEach(t=>{y+=46;T(t,L+20,y,{c:INK,w:500,s:28})});
+    row(y,L,505,"secSense",{f:r[1]});row(y,505,850,"secSense",{f:r[2]});row(y,850,R,"secSense",{toggle:r[3]});
+    const k=r[3].slice(1);if($("vn"+k).checked&&v("vt"+k))wrap("Note: "+v("vt"+k),28,950,500).forEach(t=>{y+=46;T(t,L+20,y,{c:INK,w:500,s:28});row(y,L,R,"secSense",{f:"vt"+k})});
   });
 
 
@@ -243,30 +413,35 @@ function render(cv,H){
     T("Wavelet",X,wy,{c:INK,w:700,s:36});
     T("Wavelet vector(EGM2)",X,wy+68,{s:28});U(v("wvvec")||"-",X+M("Wavelet vector(EGM2)",28)+10,R,wy+68,28);
     T("% Matching",X,wy+136,{s:28});U(v("wvpct")||"-",X+M("Wavelet vector(EGM2)",28)+10,R-40,wy+136,28);T("%",R-30,wy+136,{s:28});
-  }
+    hit(X-10,wy-46,R,wy+160,"secWv",{f:"wvpct"});
+  }else{G("Wavelet",615,y,30);hit(605,y-46,R,y+24,"secWv",{check:"wven",f:"wvpct"})}
   [["Ring1 to Ring2","i1"],["Ring1 to Coil2","i2"],["High Voltage","i3"]].forEach(r=>{
-    y+=68;T(r[0],L,y,{s:30});U(v(r[1]),300,560,y,30);T("Ω",570,y,{s:30});
+    y+=68;T(r[0],L,y,{s:30});U(v(r[1]),300,560,y,30);T("Ω",570,y,{s:30});row(y,L,600,"secImp",{f:r[1]});
   });
 
   if(v("t1v")||v("t1m")){y+=94;T("Threshold",L,y,{c:INK,w:700,s:36});
-  y+=68;U(v("t1v"),260,400,y,30);T("V @",410,y,{s:30});U(v("t1m"),485,590,y,30);T("ms",598,y,{s:30})}
+  y+=68;U(v("t1v"),260,400,y,30);T("V @",410,y,{s:30});U(v("t1m"),485,590,y,30);T("ms",598,y,{s:30});hit(L,y-120,R,y+24,"secThr",{f:"t1v"})}
+  else if(EDIT){y+=80;G("Threshold",L,y,30);row(y,L,R,"secThr",{f:"t1v"})}
 
   y+=94;T("Setting",L,y,{c:INK,w:700,s:36});
-  if(v("ov")||v("om")){y+=68;T("Output",L,y,{s:30});U(v("ov"),260,400,y,30);T("V @",410,y,{s:30});U(v("om"),485,590,y,30);T("ms",598,y,{s:30})}
-  y+=68;T("Sensitivity",L,y,{s:30});U(v("sens")||"-",400,560,y,30);T("mV",570,y,{s:30});
-  const zl=DZ.map(z=>zoneLine(z[0],z[1])).filter(Boolean);
-  if(zl.length){y+=94;T("Detection",L,y,{c:INK,w:700,s:36});T("Rates",354,y,{c:INK,w:700,s:36});T("Therapies",590,y,{c:INK,w:700,s:36});
+  if(v("ov")||v("om")){y+=68;T("Output",L,y,{s:30});U(v("ov"),260,400,y,30);T("V @",410,y,{s:30});U(v("om"),485,590,y,30);T("ms",598,y,{s:30});row(y,L,R,"secSet",{f:"ov"})}
+  else if(EDIT){y+=60;G("Output",L,y,26);row(y,L,R,"secSet",{f:"ov"})}
+  y+=68;T("Sensitivity",L,y,{s:30});U(v("sens")||"-",400,560,y,30);T("mV",570,y,{s:30});row(y,L,R,"secSet",{f:"sens"});
+  const zl=DZ.map(z=>{const r=zoneLine(z[0],z[1]);if(r)r.k=z[0];return r}).filter(Boolean);
+  if(zl.length){y+=94;const y0=y;T("Detection",L,y,{c:INK,w:700,s:36});T("Rates",354,y,{c:INK,w:700,s:36});T("Therapies",590,y,{c:INK,w:700,s:36});
     const avail=R-590;
-    zl.forEach(r=>{y+=56;T(r.lab,L,y,{c:INK,w:600,s:27});T(r.mode,L+150,y,{c:INK,w:400,s:27});T(r.rate,354,y,{c:INK,w:400,s:24});
+    zl.forEach(r=>{y+=56;row(y,L,R,"secDz",{zone:r.k});T(r.lab,L,y,{c:INK,w:600,s:27});T(r.mode,L+150,y,{c:INK,w:400,s:27});T(r.rate,354,y,{c:INK,w:400,s:24});
       let fs=25,tw=M(r.th,fs,500);if(tw>avail)fs=Math.max(14,Math.floor(fs*avail/tw));
-      T(r.th,590,y,{c:INK,w:500,s:fs})})
-  }
+      T(r.th,590,y,{c:INK,w:500,s:fs})});
+    hit(L,y0-50,R,y+24,"secDz",{})
+  }else if(EDIT){y+=80;G("Detection zone",L,y,30);row(y,L,R,"secDz",{})}
 
   const bb=y+56;c.strokeStyle=BLUE;c.lineWidth=6;c.strokeRect(44,top,1082,bb-top);
   let lines=[];if($("noep").checked)lines.push("No episode");
   v("note").split("\n").forEach(t=>{if(t.trim())lines=lines.concat(wrap(t.trim(),36,1060,600))});
   let e=bb+40;
-  if(lines.length){let fy=bb+66;lines.forEach(t=>{T(t,60,fy,{c:INK,w:600,s:36});fy+=52});e=fy-8}
+  if(lines.length){let fy=bb+66;lines.forEach(t=>{T(t,60,fy,{c:INK,w:600,s:36});fy+=52});e=fy-8;hit(40,bb+10,W-40,e+10,"secNote",{f:"note"})}
+  else if(EDIT){G("Note / No episode",60,bb+64,30);e=bb+90;hit(40,bb+10,W-40,e,"secNote",{f:"note"})}
   return Math.ceil(e);
 }
 const DZ=[["vf","VF"],["fvt","FVT"],["vt","VT"],["vtm","VT Monitor"]];
@@ -287,7 +462,7 @@ function waveletInfo(){if(!$("wven").checked)return null;
     c.innerHTML='<label class="dzen"><input type="checkbox" id="dz'+k+'en" aria-label="Enable '+lab+'">'+lab+'</label>'+
       '<div class="dzbody" id="dz'+k+'body" hidden>'+
       '<div class="dzrow"><select class="in" id="dz'+k+'m" aria-label="'+lab+' mode"><option value="">-</option><option>On</option><option>Off</option>'+(k==="fvt"?'<option>via VF</option><option>via VT</option>':'')+'</select>'+
-      '<input class="in" id="dz'+k+'r" inputmode="text" placeholder="e.g. 200-250" aria-label="'+lab+' rate bpm">'+
+      '<input class="in" id="dz'+k+'r" inputmode="text" placeholder="e.g. '+({vf:"&gt;200",fvt:"200-250",vt:"167-200",vtm:"150-167"}[k])+'" aria-label="'+lab+' rate bpm">'+
       '<span class="hd" style="flex:0 0 auto">bpm</span></div>'+
       (hasRx?([1,2,3,4,5,6].map(i=>'<div class="dzrx"><span class="dzlab">RX'+i+'</span>'+
         '<select class="in" id="dz'+k+'s'+i+'" aria-label="'+lab+' RX'+i+' type">'+TYPES+'</select>'+
@@ -318,11 +493,18 @@ function zoneLine(k,lab){
   return{lab,mode:v("dz"+k+"m")||"-",rate:v("dz"+k+"r")?v("dz"+k+"r")+" bpm":"-",th:buildTherapies(k)||"-"}
 }
 const cv=$("cv"),sc=document.createElement("canvas");let raf=0;
-function redraw(){const H=render(sc,3200);render(cv,H)}
-document.addEventListener("input",()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(redraw)});
+let curH=1500;
+function fitCv(){const box=cv.parentNode,bw=box.clientWidth,bh=box.clientHeight;if(!bw||!bh)return;
+  const k=Math.min(bw/cv.width,bh/cv.height);cv.style.width=Math.floor(cv.width*k)+"px";cv.style.height=Math.floor(cv.height*k)+"px"}
+function redrawNow(){cancelAnimationFrame(raf);raf=0;const e=render(cv,curH);if(e!==curH){curH=e;render(cv,curH)}fitCv()}
+window.addEventListener("resize",()=>{if(!isOpen)fitCv()});
+if(window.ResizeObserver)new ResizeObserver(()=>fitCv()).observe(cv.parentNode);
+window.addEventListener("load",fitCv);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitCv);
+function redraw(){if(!raf)raf=requestAnimationFrame(redrawNow)}
+document.addEventListener("input",redraw);
 function sync(){for(let i=1;i<4;i++)$("vt"+i).hidden=!$("vn"+i).checked;$("yrs").disabled=$("init").checked}
 document.addEventListener("change",()=>{sync();redraw()});
-sync();redraw();
+sync();redrawNow();
 
 function say(t){$("msg").textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>$("msg").textContent="",3000)}
 function pdfBlob(jpg,w,h){
@@ -355,13 +537,15 @@ async function out(blob,name){
 async function save(fmt){
   const base="EV-ICD_FU_"+($("date").value||"form");
   try{
-    redraw();
+    EDIT=false;redrawNow();
     let blob;
     if(fmt==="png")blob=await new Promise((r,j)=>cv.toBlob(b=>b?r(b):j(new Error("toBlob")),"image/png"));
     else{const bin=atob(cv.toDataURL("image/jpeg",0.95).split(",")[1]),u=new Uint8Array(bin.length);
       for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);blob=pdfBlob(u,cv.width,cv.height)}
+    EDIT=true;redrawNow();
     await out(blob,base+"."+fmt);say("Saved");
   }catch(e){say(e&&(e.name==="AbortError"||e.code==="declined")?"Cancelled":"Could not save: "+((e&&e.message)||e))}
+  finally{if(!EDIT){EDIT=true;redrawNow()}}
 }
 $("png").onclick=()=>save("png");$("pdf").onclick=()=>save("pdf");
 
@@ -404,8 +588,8 @@ $("copy").onclick=async()=>{const t=summary();
   try{await navigator.clipboard.writeText(t);say("Copied")}
   catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();
     try{document.execCommand("copy");say("Copied")}catch(_){say("Copy failed")}a.remove()}};
-$("clear").onclick=()=>{document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
-  document.querySelectorAll("input[type=checkbox]").forEach(e=>{e.checked=false;e.dispatchEvent(new Event("change",{bubbles:true}))});$("pm").value="OVO";$("date").value=today();sync();redraw();say("Cleared")};
+$("clear").onclick=()=>{closeSheet();document.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>e.value="");
+  document.querySelectorAll("input[type=checkbox]").forEach(e=>{e.checked=e.defaultChecked;e.dispatchEvent(new Event("change",{bubbles:true}))});$("pm").value="OVO";$("date").value=today();sync();redraw();say("Cleared")};
 /* ---- V02 easier input: segmented buttons instead of dropdowns ---- */
 function segify(sel,labels){
   if(!sel||sel.dataset.seg)return;sel.dataset.seg="1";sel.hidden=true;
@@ -426,8 +610,120 @@ DZ.forEach(([k])=>{segify($("dz"+k+"m"));for(let i=1;i<=6;i++)segify(document.ge
   document.getElementById("dz"+k+"fill")&&document.getElementById("dz"+k+"fill").addEventListener("click",()=>{for(let i=2;i<=6;i++)$("dz"+k+"s"+i).dispatchEvent(new Event("change",{bubbles:true}))});
 });
 segify($("yru"));segify($("minu"));
-$("pwoall").onclick=()=>{const x=v("p1");if(!x){say("Fill Ring1 to Ring2 first");return}$("p2").value=x;$("p3").value=x;redraw()};
-if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+/* ---- V05: tap the report to edit ---- */
+let moved=[],isOpen=false;
+const TABS=document.createElement("div");TABS.className="dztabs";TABS.setAttribute("role","tablist");
+DZ.forEach(([k,lab])=>{const b=document.createElement("button");b.type="button";b.dataset.k=k;b.setAttribute("role","tab");
+  b.innerHTML=(k==="vtm"?"VTM":lab)+'<i aria-hidden="true"></i>';b.setAttribute("aria-label",lab);b.onclick=()=>setTab(k);TABS.appendChild(b)});
+function paintTabs(){const t=$("dzwrap").dataset.tab;[...TABS.children].forEach(b=>{const on=b.dataset.k===t;b.classList.toggle("on",on);b.setAttribute("aria-selected",on);b.classList.toggle("used",$("dz"+b.dataset.k+"en").checked)})}
+function setTab(k){$("dzwrap").dataset.tab=k;DZ.forEach(([z])=>$("dz"+z+"en").closest(".dzc").classList.toggle("act",z===k));paintTabs();$("sheetBody").scrollTop=0}
+document.addEventListener("change",paintTabs);
+const TOUCH="ontouchstart" in window,IFR=(()=>{try{return window.self!==window.top}catch(_){return true}})();
+const isTyping=a=>/^(INPUT|TEXTAREA)$/.test(a.tagName)&&a.type!=="checkbox"&&a.type!=="date"&&!a.readOnly;
+function unitsFor(h){
+  const F=id=>$(id).closest(".f"),G="grid";
+  if(h.zone)return{t:"Detection zone",u:[$("dzwrap")],tab:h.zone};
+  const sv=/^(s|p|vt)([123])$/.exec(h.f||"");
+  if(sv){const k=sv[2],tb=$("s1").parentNode,hd=[...tb.children].slice(0,3).map(n=>n.cloneNode(true)),nh=document.createElement("span");nh.className="hd c";nh.textContent="Note";hd.push(nh);
+    const u=[];for(const j of [1,2,3])u.push($("s"+j).previousElementSibling,$("s"+j),$("p"+j),$("vn"+j).closest(".vn"));
+    return{t:"Sensing R wave",g:"tb s",pre:hd,u}}
+  const M={rhythm:["Rhythm",[F("rhythm")]],date:["Follow up date",[F("date")]],pm:["Mode",[F("pm")]],doi:["DOI",[F("doi")]],
+    rate:["Rate",[F("rate")]],batt:["Battery",[F("batt")]],yrs:["Est. longevity",[F("yrs")]],chg:["Charge time",[F("chg"),F("chgj")]],
+    vpace:["V-pace episode",[F("vpace")]],
+    ov:["Output",[F("ov")]],sens:["Sensitivity",[F("sens")]]};
+  if(/^i[123]$/.test(h.f||""))return{t:"Impedance (Ω)",g:"grid imp",u:[F("i1"),F("i2"),F("i3")]};
+  if(M[h.f])return{t:M[h.f][0],g:G,u:M[h.f][1]};
+  if(h.f==="minval")return{t:"Min",u:[$("minen").closest(".dzc")]};
+  if(h.f==="wvpct")return{t:"Wavelet",u:[$("wven").closest(".dzc")]};
+  if(h.f==="t1v")return{t:"Threshold",u:[$("t1v").closest(".line")]};
+  if(h.f==="note")return{t:"Note",u:[$("note"),$("noep").closest("label")]};
+  return{t:"Detection zone",u:[$("dzwrap")],tab:(DZ.find(d=>$("dz"+d[0]+"en").checked)||DZ[0])[0]};
+}
+function restore(){moved.forEach(([el,ph])=>ph.replaceWith(el));moved=[];$("sheetBody").textContent=""}
+function closeSheet(){if(!isOpen)return;$("sheet").classList.remove("kbtop");$("sheet").style.bottom="";$("sheet").style.maxHeight="";
+  if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+  restore();isOpen=false;$("sheet").hidden=true;$("scrim").hidden=true;document.body.classList.remove("sheet-open");redraw()}
+function openSheet(h,clientY){
+  const g=unitsFor(h);restore();
+  const wrap=document.createElement("div");wrap.className="body";let inner=wrap;
+  if(g.g){inner=document.createElement("div");inner.className=g.g;wrap.appendChild(inner)}
+  (g.pre||[]).forEach(n=>inner.appendChild(n));
+  g.u.forEach(el=>{const ph=document.createComment("slot");el.before(ph);moved.push([el,ph]);inner.appendChild(el)});
+  (g.post||[]).forEach(el=>{const ph=document.createComment("slot");el.before(ph);moved.push([el,ph]);wrap.appendChild(el)});
+  if(g.tab)wrap.prepend(TABS);
+  $("sheetBody").appendChild(wrap);isOpen=true;
+  if(g.tab)setTab(g.tab);else $("dzwrap").removeAttribute("data-tab");$("sheetT").textContent=g.t;
+  const el=h.f&&$(h.f),typ=el&&isTyping(el)&&$("sheetBody").contains(el);
+  /* inside the Claude app every sheet opens in the raised spot, so nothing moves when the keyboard comes up */
+  $("sheet").classList.toggle("kbtop",!!(TOUCH&&IFR));
+  $("sheet").hidden=false;$("scrim").hidden=false;document.body.classList.add("sheet-open");
+  if(el&&!el.disabled&&!el.readOnly&&$("sheetBody").contains(el)){try{el.focus({preventScroll:true})}catch(_){el.focus()}}
+  const b=$("sheetBody");b.scrollTop=0;if(el&&b.contains(el)){const d=el.getBoundingClientRect().top-b.getBoundingClientRect().top;if(d>b.clientHeight-60)b.scrollTop=d-20}
+}
+cv.addEventListener("click",e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)*cv.width/r.width,y=(e.clientY-r.top)*cv.height/r.height;
+  const hs=HITS.filter(h=>x>=h.x1&&x<=h.x2&&y>=h.y1&&y<=h.y2).sort((a,b)=>(a.x2-a.x1)*(a.y2-a.y1)-(b.x2-b.x1)*(b.y2-b.y1));
+  const h=hs[0];if(!h)return;
+  if(h.toggle){const t=$(h.toggle);t.checked=!t.checked;t.dispatchEvent(new Event("change",{bubbles:true}));return}
+  if(h.check&&!$(h.check).checked){$(h.check).checked=true;$(h.check).dispatchEvent(new Event("change",{bubbles:true}))}
+  openSheet(h,e.clientY);
+});
+/* keep the sheet above the iPhone keyboard */
+function fitSheet(){const vv=window.visualViewport,sh=$("sheet");if(!vv||sh.hidden)return;
+  const kb=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
+  sh.style.bottom=kb+"px";sh.style.maxHeight=Math.round(vv.height*(kb>0?0.72:0.6))+"px";
+  const a=document.activeElement;if(kb>0&&a&&$("sheetBody").contains(a)){
+    const b=$("sheetBody").getBoundingClientRect(),r=a.getBoundingClientRect();
+    if(r.top<b.top+8||r.bottom>b.bottom-8)$("sheetBody").scrollTop+=r.top-b.top-12}}
+if(window.visualViewport){visualViewport.addEventListener("resize",fitSheet);visualViewport.addEventListener("scroll",fitSheet)}
+
+function toTop(a){const b=$("sheetBody");b.scrollTop+=a.getBoundingClientRect().top-b.getBoundingClientRect().top-30}
+document.addEventListener("focusin",e=>{const a=e.target;if(!$("sheetBody").contains(a))return;fitSheet();
+  if($("sheet").classList.contains("kbtop")&&isTyping(a)){const b=$("sheetBody").getBoundingClientRect(),r=a.getBoundingClientRect();if(r.bottom>b.bottom-8||r.top<b.top)toTop(a)}
+  setTimeout(()=>{fitSheet();const vv=window.visualViewport,kb=vv?window.innerHeight-vv.height-vv.offsetTop:0;
+    /* inside the Claude app the keyboard may not resize this page: lift the sheet above it */
+    if(TOUCH&&kb<40&&isTyping(a)&&!$("sheet").classList.contains("kbtop")){$("sheet").classList.add("kbtop");requestAnimationFrame(()=>toTop(a))}},450)});
+document.addEventListener("focusout",()=>setTimeout(()=>{if(IFR)return;const a=document.activeElement;if(!a||!$("sheetBody").contains(a)||!/^(INPUT|TEXTAREA)$/.test(a.tagName))$("sheet").classList.remove("kbtop")},120));
+
+$("sheetClear").onclick=()=>{const b=$("dzwrap").dataset.tab&&$("sheetBody").contains($("dzwrap"))?$("sheetBody").querySelector("#dzwrap .dzc.act"):$("sheetBody");
+  b.querySelectorAll("input.in:not([readonly]),textarea").forEach(e=>{e.value=e.id==="date"?today():e.defaultValue});
+  b.querySelectorAll("select").forEach(e=>{const o=[...e.options].find(o=>o.defaultSelected)||e.options[0];e.value=o?o.value:"";e.dispatchEvent(new Event("change",{bubbles:true}))});
+  b.querySelectorAll("input[type=checkbox]").forEach(e=>{if(e.checked!==e.defaultChecked){e.checked=e.defaultChecked;e.dispatchEvent(new Event("change",{bubbles:true}))}});
+  sync();redraw();say("Cleared "+(b.id==="sheetBody"?$("sheetT").textContent:DZ.find(d=>d[0]===$("dzwrap").dataset.tab)[1]))};
+/* only one current vector */
+[1,2,3].forEach(k=>$("c"+k).addEventListener("change",e=>{if(e.target.checked)[1,2,3].forEach(j=>{if(j!==k)$("c"+j).checked=false})}));
+$("sheetDone").onclick=closeSheet;$("scrim").onclick=closeSheet;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+/* ---- what's new box ---- */
+const NEWS_ID="V05-2026-11-06b";
+const store={get(k){try{return localStorage.getItem(k)}catch(_){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(_){}},del(k){try{localStorage.removeItem(k)}catch(_){}}};
+function openNews(){$("news").hidden=false;$("newsBtn").classList.remove("dot");store.set("evicd_news_seen",NEWS_ID)}
+function closeNews(){$("news").hidden=true}
+$("newsBtn").onclick=openNews;$("newsOk").onclick=closeNews;$("newsX").onclick=closeNews;
+$("news").addEventListener("click",e=>{if(e.target===$("news"))closeNews()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("news").hidden)closeNews()});
+/* ---- keep what was typed (this browser only) ---- */
+const DRAFT="evicd_v05_draft";
+function fields(){return [...document.querySelectorAll("#forms input,#forms select,#forms textarea,#sheetBody input,#sheetBody select,#sheetBody textarea")].filter(e=>e.id&&!e.readOnly)}
+let dT=0;
+function saveDraft(){clearTimeout(dT);dT=setTimeout(()=>{const d={_v:2};fields().forEach(e=>{d[e.id]=e.type==="checkbox"?e.checked:e.value});store.set(DRAFT,JSON.stringify(d))},300)}
+function loadDraft(){let d=null;try{d=JSON.parse(store.get(DRAFT)||"null")}catch(_){}if(!d)return false;
+  if(d._v!==2)d.wven=true; /* Wavelet now shown by default */
+  const els=fields();
+  els.forEach(e=>{if(!(e.id in d))return;if(e.type==="checkbox")e.checked=!!d[e.id];else e.value=d[e.id]});
+  els.forEach(e=>{if(e.id in d&&(e.type==="checkbox"||e.tagName==="SELECT"))e.dispatchEvent(new Event("change",{bubbles:true}))});
+  return true}
+document.addEventListener("input",saveDraft);document.addEventListener("change",saveDraft);
+const _clear=$("clear").onclick;const doClear=()=>{_clear();clearTimeout(dT);store.del(DRAFT)};
+function askClear(){closeSheet();$("cfm").hidden=false;$("cfmNo").focus()}
+function closeCfm(){$("cfm").hidden=true}
+$("clear").onclick=askClear;
+$("cfmNo").onclick=closeCfm;$("cfmYes").onclick=()=>{closeCfm();doClear()};
+$("cfm").addEventListener("click",e=>{if(e.target===$("cfm"))closeCfm()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("cfm").hidden)closeCfm()});
+if(loadDraft()){sync();redrawNow();say("Restored your last entries")}
+if(store.get("evicd_news_seen")!==NEWS_ID){$("newsBtn").classList.add("dot");openNews()}
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
 </html>
