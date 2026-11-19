@@ -1,6 +1,6 @@
 {
-  "name": "EV-ICD F/U",
-  "short_name": "EV-ICD F/U",
+  "name": "EV-ICD FU",
+  "short_name": "EV-ICD FU",
   "description": "EV-ICD follow-up form (Medtronic DVEA3E4)",
   "start_url": "./",
   "scope": "./",
